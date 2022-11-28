@@ -20,12 +20,19 @@ class TinderAPI:
         data = []
 
         for result in res["results"]:
+
+            birth_date = None
+
+        if result.get("birth_date"):
+            birth_date = datetime.strptime(result["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            birth_date = birth_date.date()
+
             user = {
                 "id": result["_id"],
                 "name": result["name"],
                 "bio": result["bio"],
                 "gender": result["gender"],
-                "birth_date": result["birth_date"],
+                "birth_date": birth_date,
                 "distance_mi": result["distance_mi"],
                 "photos": [],
             }
