@@ -12,4 +12,4 @@ options:
   dynamic_substitutions: true
 
 substitutions:
-  _REGISTERY_URL: europe-west3-docker.pkg.dev/him/him/him-api
+  _REGISTERY_URL: europe-west3-docker.pkg.dev/tinder-him/him/him-api
