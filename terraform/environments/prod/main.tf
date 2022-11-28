@@ -20,7 +20,7 @@ terraform {
 module "him" {
   source  = "../../modules/him"
   stage   = "prod"
-  is_prod = false
+  is_prod = true
   db_settings = {
     tier              = "db-custom-1-3840"
     availability_type = "ZONAL"

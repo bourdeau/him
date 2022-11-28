@@ -8,7 +8,7 @@ resource "google_cloud_run_service" "him_api" {
     spec {
       service_account_name = google_service_account.him_api.email
       containers {
-        image = "europe-west3-docker.pkg.dev/him/him-api"
+        image = "europe-west3-docker.pkg.dev/tinder-him/him/him-api"
         env {
           name  = "CLOUD_RUN_ENV"
           value = var.stage

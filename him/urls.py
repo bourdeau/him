@@ -7,6 +7,7 @@ from him.app import views
 
 router = routers.DefaultRouter()
 router.register(r"personn", views.PersonnViewSet)
+router.register(r"bot", views.BotViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

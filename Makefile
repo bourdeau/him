@@ -23,15 +23,8 @@ help:
 	@echo "$(purple)pip-dev$(end)                 install dev requirements"
 	@echo "$(purple)codestyle$(end)               apply codestyle"
 	@echo "$(purple)test$(end)                    run tests"
-	@echo "$(purple)cloud_sql_proxy_dev$(end)     start cloud_sql_proxy for dev"
-	@echo "$(purple)cloud_sql_proxy_preprod$(end) start cloud_sql_proxy for preprod"
 	@echo "$(purple)cloud_sql_proxy_prod$(end)    start cloud_sql_proxy for prod"
 	@echo "$(purple)build$(end)                   build the docker image"
-	@echo "$(purple)create-user-dev$(end)         create a user in dev environment"
-	@echo "$(purple)create-user-preprod$(end)     create a user in preprod environment"
-	@echo "$(purple)create-user-prod$(end)        create a user in prod environment"
-	@echo "$(purple)deploy-dev$(end)              deploy to dev environment"
-	@echo "$(purple)deploy-preprod$(end)          deploy to preprod environment"
 	@echo "$(purple)deploy-prod$(end)             deploy to prod environment"
  
 
@@ -104,26 +97,6 @@ cloud_sql_proxy_prod:
 .PHONY: build
 build:
 	gcloud builds submit --config gcp-build.yaml
-
-.PHONY: create-user-dev
-create-user-dev:
-	gcloud builds submit --config gcp-create-user.yaml --substitutions=_GCP_ENV=dev,_USER_NAME=him,_USER_EMAIL=ph@gleeph.net,_USER_PASSWORD=him
-
-.PHONY: create-user-preprod
-create-user-preprod:
-	gcloud builds submit --config gcp-create-user.yaml --substitutions=_GCP_ENV=preprod,_USER_NAME=him,_USER_EMAIL=ph@gleeph.net,_USER_PASSWORD=him
-
-.PHONY: create-user-prod
-create-user-prod:
-	gcloud builds submit --config gcp-create-user.yaml --substitutions=_GCP_ENV=prod,_USER_NAME=him,_USER_EMAIL=ph@gleeph.net,_USER_PASSWORD=N&c%yze5bun7Q2&Zt@kjzbM&62P
-
-.PHONY: deploy-dev
-deploy-dev:
-	gcloud builds submit --config gcp-deploy.yaml --substitutions=_GCP_ENV=dev
-
-.PHONY: deploy-preprod
-deploy-preprod:
-	gcloud builds submit --config gcp-deploy.yaml --substitutions=_GCP_ENV=preprod
 
 .PHONY: deploy-prod
 deploy-prod:
