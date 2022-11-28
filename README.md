@@ -16,14 +16,12 @@ Him is here to re-establish genders equality on Tinder.
 
 You will need:
 - You will need a Tinder account obviously
-- You will need Docker
+- You will need [Docker](https://docs.docker.com/get-docker/)
 - You need to be logged in to your Tinder account and get the `X-Auth-Token` with your browser debug tool
 - You need an [OpenAI](https://beta.openai.com) secret key
 
 
 ## Installation 💻
-
-You need Docker & Docker Compose
 
 For a fresh install:
 
@@ -34,6 +32,7 @@ make collectstatic
 make migrate
 make load-fixtures
 ```
+
 http://0.0.0.0:8000
 
 
@@ -54,6 +53,9 @@ make codestyle
 ```
 
 ## To run the bot
+
+The bot is a Django command that will like profiles, send first messages and chat with you matches.
+Look at the `config.yml` if you want to disable some features.
 
 ```bash
 make bot-run
