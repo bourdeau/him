@@ -2,8 +2,7 @@ from rest_framework.test import APITestCase
 
 
 class BaseAPITestCase(APITestCase):
-    fixtures = ["personn"]
+    fixtures = ["person"]
 
     def test(self):
         self.assertEqual(1, 1)
-

@@ -1,13 +1,19 @@
-from rest_framework import viewsets
-from him.app.serializers import PersonnSerializer
-
-from him.app.models import Personn
+from rest_framework import viewsets, views
+from rest_framework.response import Response
 
 
-class PersonnViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Personn.objects.all()
-    serializer_class = PersonnSerializer
+from him.app.serializers import PersonSerializer
+from him.app.models import Person
+from him.app.bot import TinderBot
 
-class BotViewSet(viewsets.ViewSet):
-    def list(self, request):
-        pass
+
+class BotView(views.APIView):
+    def get(self, request, format=None):
+        bot = TinderBot()
+        bot.run()
+        return Response({"status": "Ok"})
+
+
+class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer

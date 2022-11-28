@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from him.app.models import Personn
+from him.app.models import Person
 
 
-class PersonnSerializer(serializers.ModelSerializer):
+class PersonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Personn
+        model = Person
         fields = "__all__"

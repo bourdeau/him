@@ -6,11 +6,11 @@ from rest_framework import routers
 from him.app import views
 
 router = routers.DefaultRouter()
-router.register(r"personn", views.PersonnViewSet)
-router.register(r"bot", views.BotViewSet)
+router.register(r"person", views.PersonViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("bot/", views.BotView.as_view(), name="bot"),
     path("", include(router.urls)),
 ]
 

@@ -3,7 +3,7 @@ from him.settings import config
 from him.app.chat import Chat
 from him.app.helpers import Base
 from him.app.message import Message
-from him.app.models import Personn, Photo
+from him.app.models import Person, Photo, Message
 
 
 class TinderBot(Base):
@@ -43,28 +43,25 @@ class TinderBot(Base):
                 self.logger.info("---------------------------------")
                 self.logger.info("👤 %s", likable["name"])
 
-
                 photos = likable["photos"]
                 likable.pop("photos", None)
-                personn = Personn(**likable)
+                person = Person(**likable)
 
                 if likable["distance_mi"] <= config["like"]["radius"]:
                     self.tinderapi.like(likable["id"])
                     self.current_like += 1
-                    personn.liked = True
+                    person.liked = True
                     self.logger.info("Liked !")
                 else:
                     self.tinderapi.dislike(likable["id"])
-                    personn.liked = False
+                    person.liked = False
                     self.logger.info("Disliked...")
 
-                personn.save()
+                person.save()
 
                 for photo_data in photos:
-                    photo = Photo(**photo_data, personn=personn)
+                    photo = Photo(**photo_data, person=person)
                     photo.save()
-
-                
 
     def __send_first_messages(self) -> None:
         """
@@ -103,15 +100,44 @@ class TinderBot(Base):
         messages.reverse()
 
         for i, message in enumerate(messages):
+            message["order_id"] = i
+            self.save_message_to_db(message)
 
             message_data = {"id": i, "message": message["message"]}
 
-            if message["from"] == chat_data["her"]["id_profile"]:
+            if message["person"] == chat_data["her"]["id_profile"]:
                 message_data["user"] = chat_data["her"]["name"]
             else:
                 message_data["user"] = config["your_profile"]["name"]
 
             chat_data["chat_history"].append(message_data)
 
-        chat = Chat()
-        chat.chat(chat_data)
+        # chat = Chat()
+        # chat.chat(chat_data)
+
+    def save_message_to_db(self, message: dict) -> None:
+        """
+        Save the message in the database.
+        """
+        try:
+            person = Person.objects.get(pk=message["person"])
+        except Person.DoesNotExist:
+            person_data = self.tinderapi.get_profile(message["person"])
+
+            photos = person_data["photos"]
+            person_data.pop("photos", None)
+            person = Person(**person_data)
+            person.liked = True
+            person.save()
+
+            for photo_data in photos:
+                photo = Photo(**photo_data, person=person)
+                photo.save()
+
+        message["person"] = person
+
+        try:
+            message = Message.objects.get(pk=message["id"])
+        except Message.DoesNotExist:
+            message = Message(**message)
+            message.save()
