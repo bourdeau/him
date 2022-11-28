@@ -1,6 +1,6 @@
 variable "project" {
   type        = string
-  default     = "him"
+  default     = "tinder-him"
   description = "The Project ID on GCP"
 }
 

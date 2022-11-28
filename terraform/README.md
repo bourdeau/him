@@ -43,10 +43,10 @@ Let's say you want to add a new bucket to store kittens pictures.
 
 3. Provisioning:
 
-   Now you want to try your new bucket in dev?
+   Now you want to try your new bucket in prod?
 
    ```bash
-   cd environements/dev
+   cd environements/prod
 
    # To see the bucket you're about to create
    terraform plan
@@ -54,21 +54,13 @@ Let's say you want to add a new bucket to store kittens pictures.
    # To create your new bucket
    terraform apply
    ```
-   
-   You are happy with your bucket in dev and would like to have it in prod too?
-
-   ```bash
-   cd environements/prod
-   terraform apply
-   ```
-
 
 ## Enabling Google APIs
 
 For many reasons, Google APIs are not in the Terraform ressources. If it's a new project you will have to enable the APIs manually:
 
 ```bash
-gcloud config set project him
+gcloud config set project tinder-him
 
 gcloud services enable \
   cloudbuild.googleapis.com \
@@ -102,7 +94,7 @@ terraform fmt
 If you need to connect to the database, please use [cloud_sql_proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy?hl=fr#install) instead of giving it a public access (for obvious reasons).
 
 ```
-cloud_sql_proxy -instances=him:europe-west3:him-dev=tcp:5432
+cloud_sql_proxy -instances=him:europe-west3:him-prod=tcp:5432
 ```
 
 Then connect to it via Pgadmin or whatever on localhost.

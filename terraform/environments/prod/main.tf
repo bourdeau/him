@@ -1,5 +1,12 @@
 terraform {
   required_version = ">= 1.3"
+  cloud {
+    organization = "tinder-him"
+
+    workspaces {
+      name = "him-prod"
+    }
+  }
   required_providers {
     google = {
       source  = "hashicorp/google"
@@ -7,45 +14,23 @@ terraform {
     }
     random = ">= 3.4.3"
   }
-  cloud {
-    organization = "him"
-
-    workspaces {
-      name = "him-prod"
-    }
-  }
 }
 
 
 module "him" {
   source  = "../../modules/him"
-
-  stage = "prod"
-  is_prod = true
+  stage   = "prod"
+  is_prod = false
   db_settings = {
-    tier              = "db-custom-2-4096"
+    tier              = "db-custom-1-3840"
     availability_type = "ZONAL"
-    retained_backups  = 3
+    retained_backups  = 1
   }
   cr_api_settings = {
-    cpu            = "2000m"
-    memory         = "4096Mi"
+    cpu            = "1000m"
+    memory         = "2048Mi"
     cpu_throttling = false
-    min_scale      = "1"
-    max_scale      = "10"
-  }
-  cr_worker_settings = {
-    cpu            = "2000m"
-    memory         = "4096Mi"
-    cpu_throttling = false
-    min_scale      = "1"
-    max_scale      = "10"
-  }
-  cr_bookreco_settings = {
-    cpu            = "2000m"
-    memory         = "4096Mi"
-    cpu_throttling = false
-    min_scale      = "1"
-    max_scale      = "10"
+    min_scale      = "0"
+    max_scale      = "2"
   }
 }

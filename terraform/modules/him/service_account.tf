@@ -6,7 +6,7 @@ data "google_compute_default_service_account" "default" {
 # Service Account for the Django API
 resource "google_service_account" "him_api" {
   account_id   = "him-api-${var.stage}"
-  display_name = "him Django (${var.stage})"
+  display_name = "Django (${var.stage})"
   description  = "Service account for him Django API"
 }
 
