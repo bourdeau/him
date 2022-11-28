@@ -28,4 +28,4 @@ postgres_data
 static
 .env
 auth.json
-config-yml
+config.yml
