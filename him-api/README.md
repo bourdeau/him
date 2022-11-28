@@ -1,25 +1,4 @@
-# Him 🍆🍑💦
-
-Tinder is not fair game when you are a man. Even if you spend a lot of money in Boosts, you won't get 50+ matches per day like women do.
-
-That's until you use "Him".
-
-Him is here to re-establish genders equality on Tinder.
-
-## Features
-
-- Like profile depending on `RADIUS` until `MAX_LIKE` is reached
-- Send the first message from `FIRST_MESSAGES`
-- Chat with your matches using OpenAI davinci
-
-## Prerequisites
-
-You will need:
-- You will need a Tinder account obviously
-- You will need [Docker](https://docs.docker.com/get-docker/)
-- You need to be logged in to your Tinder account and get the `X-Auth-Token` with your browser debug tool
-- You need an [OpenAI](https://beta.openai.com) secret key
-
+# Him 
 
 ## Installation 💻
 
