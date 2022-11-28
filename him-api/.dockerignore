@@ -13,9 +13,7 @@ docker-compose.yml
 **/env
 auth.json
 gcp-build.yaml
-gcp-create-user.yaml
 gcp-deploy.yaml
-gcp-migrate.yaml
 .env
 .env-dist
 Makefile
