@@ -53,7 +53,7 @@ options:
 
 substitutions:
   _PROJECT_ID: him
-  _DATABASE_NAME: him-${_GCP_ENV}
+  _DATABASE_NAME: him-api-${_GCP_ENV}
   _REGION: europe-west3
   _REGISTERY_URL: europe-west3-docker.pkg.dev/tinder-him/him/him-api
   _PORT: "8000"
