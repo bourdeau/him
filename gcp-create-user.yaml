@@ -1,0 +1,25 @@
+steps:  
+  - id: "Create User: -> "
+    name: "gcr.io/google-appengine/exec-wrapper"
+    args:
+      [
+        "-i", "${_REGISTERY_URL}",
+        "-s", "${_PROJECT_ID}:${_REGION}:${_DATABASE_NAME}",
+        "-e", "SETTINGS_NAME=django_settings-${_GCP_ENV}",
+        "--",
+        "python",
+        "manage.py",
+        "createhimuser",
+        "--name=${_USER_NAME}",
+        "--email=${_USER_EMAIL}",
+        "--password=${_USER_PASSWORD}"
+      ]
+
+options:
+  dynamic_substitutions: true
+
+substitutions:
+  _PROJECT_ID: him
+  _DATABASE_NAME: him-${_GCP_ENV}
+  _REGION: europe-west3
+  _REGISTERY_URL: europe-west3-docker.pkg.dev/him/him/him-api

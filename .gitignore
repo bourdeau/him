@@ -1,0 +1,30 @@
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.pytest_cache/
+
+
+# Environments
+venv
+
+# Rope project settings
+.ropeproject
+
+# Project
+postgres_data
+static
+.env
+auth.json

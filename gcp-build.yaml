@@ -1,0 +1,15 @@
+steps:
+  - id: "Build Docker Image: -> "
+    name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "${_REGISTERY_URL}", "."]
+
+  - id: "Push Docker Image: -> "
+    name: "gcr.io/cloud-builders/docker"
+    args: ["push", "${_REGISTERY_URL}"]
+  
+
+options:
+  dynamic_substitutions: true
+
+substitutions:
+  _REGISTERY_URL: europe-west3-docker.pkg.dev/him/him/him-api
