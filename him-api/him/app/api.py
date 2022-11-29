@@ -4,9 +4,9 @@ from him.app.serializers import PersonAPISerializer, MessageAPISerializer
 from typing import Generator
 
 
-class TinderAPI:
+class TinderAPIClient:
     """
-    TODO: please use Serializer and stop pissing rubbish code...
+    Tinder API Client.
     """
 
     def __init__(self, token) -> None:
@@ -14,19 +14,19 @@ class TinderAPI:
 
     def like(self, user_id: str) -> None:
         """
-        Like a user
+        Like a user.
         """
         self.__request("POST", f"/like/{user_id}")
 
     def dislike(self, user_id: str) -> None:
         """
-        Dislike a user
+        Dislike a user.
         """
         self.__request("POST", f"/pass/{user_id}")
 
-    def get_likables(self) -> Generator[PersonAPISerializer]:
+    def get_likables(self) -> Generator:
         """
-        Get a list of users that you can like
+        Get a list of users that you can like.
         """
         res = self.__request("GET", "/recs/core")
 
@@ -39,10 +39,9 @@ class TinderAPI:
 
             yield serializer
 
-    def get_matches(self) -> Generator[tuple(str, str)]:
+    def get_new_matches(self) -> list:
         """
-        Get a list of matches.
-
+        Get a list of new matches (i.e. 0 messages)
         get_matches() and get_new_matches() call the same endpoint
         but for one Tinder returns a list of matches and for the other
         it returns a list of new matches.
@@ -51,7 +50,7 @@ class TinderAPI:
         """
         params = {
             "count": 60,
-            "message": 1,
+            "message": 0,
             "is_tinder_u": False,
         }
 
@@ -62,17 +61,17 @@ class TinderAPI:
 
         matches = res["data"]["matches"]
 
-        for result in matches:
-            yield result["id"], result["person"]["name"]
+        for match in matches:
+            yield match["id"], match["person"]["_id"], match["person"]["name"]
 
 
-    def get_new_matches(self) -> list:
+    def get_matches(self) -> Generator:
         """
-        Get a list of new matches
+        Get a list of matches (i.e. 1 messages).
         """
         params = {
             "count": 60,
-            "message": 0,
+            "message": 1,
             "is_tinder_u": False,
         }
 
@@ -91,7 +90,7 @@ class TinderAPI:
 
     def get_messages(self, match_id: str) -> list:
         """
-        Get messages from a match
+        Get messages from a match.
         """
         parmas = {
             "count": 100,
@@ -109,15 +108,23 @@ class TinderAPI:
 
             yield serializer
 
-    def send_message(self, match_id: str, message: str) -> None:
+    def send_message(self, match_id: str, other_id: str, message: str) -> None:
         """
         Send a message to a match
         """
         url = f"/user/matches/{match_id}"
 
-        data = {"message": message}
+        params = {
+            "locale": "fr",
+        }
+        data = {
+            "userId": "62d7d7a14e95f00100f1cc19", # My ID
+            "otherId": other_id,
+            "matchId": match_id,
+            "message": message
+        }
 
-        self.__request("POST", url, data=data)
+        self.__request("POST", url=url, params=params, data=data)
 
     def get_profile(self, profile_id: str):
         res = self.__request("GET", f"/user/{profile_id}")
@@ -176,24 +183,20 @@ class TinderAPI:
         Make a request to the Tinder API
         """
         headers = {
-            "Accept": "application/json",
-            "X-Auth-Token": self.token,
-            "Accept-Language": "fr,fr-FR,en-US,en",
-            "Accept-Encoding": "gzip, deflate, br",
-            "Content-Type": "application/json",
-            "tinder-version": "3.53.0",
+            "X-Auth-Token": self.token
         }
 
         url = "https://api.gotinder.com" + url
+
 
         if method == "GET":
             r = requests.get(url, headers=headers, params=params)
         elif method == "POST":
             r = requests.post(url, headers=headers, params=params, data=data)
 
+        r.raise_for_status()
+
         if r.status_code == 204:
             return None
-
-        r.raise_for_status()
 
         return r.json()

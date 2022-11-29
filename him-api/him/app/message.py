@@ -4,7 +4,7 @@ from string import Template
 from him.settings import config
 
 
-class Message:
+class MessageTemplate:
     """
     Chat with a Profile.
     """

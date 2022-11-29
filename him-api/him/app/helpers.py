@@ -9,7 +9,7 @@ import pathlib
 from os import listdir
 from os.path import isfile, join
 
-from him.app.api import TinderAPI
+from him.app.api import TinderAPIClient
 from him.settings import BASE_DIR, config
 
 
@@ -26,7 +26,7 @@ def custom_exception_handler(exc, context):
 class Base:
     def __init__(self) -> None:
         self.logger = logger
-        self.tinderapi = TinderAPI(token=config["x_auth_token"])
+        self.tinderapi = TinderAPIClient(token=config["x_auth_token"])
 
     def sleep_short(self) -> None:
         time.sleep(randint(100, 1000) / 1000)

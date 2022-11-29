@@ -1,7 +1,7 @@
 from him.settings import config
 
 from him.app.helpers import Base
-from him.app.message import Message
+from him.app.message import MessageTemplate
 from him.app.models import Person, Photo, Message
 
 
@@ -30,7 +30,7 @@ class TinderBot(Base):
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
         while self.current_like < config["like"]["max"]:
-            persons_data = self.tinderapi.get_new_matches()
+            persons_data = self.tinderapi.get_likables()
 
             if not persons_data:
                 self.logger.info("No profiles to Like found")
@@ -40,10 +40,12 @@ class TinderBot(Base):
                 self.sleep_long()
                 person = person_data.save()
                 likable = person.likable()
-                message = "disliked"
-
                 if likable:
+                    self.tinderapi.like(person.id)
                     message = "liked"
+                else:
+                    self.tinderapi.dislike(person.id)
+                    message = "disliked"
 
                 person.save()
 
@@ -55,20 +57,19 @@ class TinderBot(Base):
         """
         self.logger.info("✉️ ✉️ ✉️ SENDING FIRST MESSAGE ✉️ ✉️ ✉️")
 
-        new_matches = self.tinderapi.get_matches()
+        new_matches = self.tinderapi.get_new_matches()
 
         if not new_matches:
             self.logger.info("No profiles to Like found")
             return
 
-        for id_match, person_name in new_matches:
+        for match_id, personn_id, person_name in new_matches:
 
-            message = Message()
+            message = MessageTemplate()
             message = message.get_message(person_name)
-            
-            self.tinderapi.send_message(id_match, message)
+            self.tinderapi.send_message(match_id, personn_id, message)
 
-            self.logger.info("Message sent to %s : %s", id_match, message)
+            self.logger.info("✉️ sent to %s : %s", person_name, message)
 
     def __chat_with_matches(self):
         """
