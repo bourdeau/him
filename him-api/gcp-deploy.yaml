@@ -13,6 +13,14 @@
 # Step #0 - "Apply Migrations: -> ": 2022/11/29 07:39:19 errors parsing config:
 # Step #0 - "Apply Migrations: -> ": googleapi: Error 404: The Cloud SQL instance does not exist., instanceDoesNotExist
 # Finished Step #0 - "Apply Migrations: -> "
+#
+# Sometimes the error is more explicit
+#
+# ---------- CONNECT CLOUDSQL ----------
+# ERROR: Failed to start cloud_sql_proxy
+# 2022/11/29 08:39:59 current FDs rlimit set to 1048576, wanted limit is 8500. Nothing to do here.
+# 2022/11/29 08:40:00 errors parsing config: googleapi: Error 404: The Cloud SQL instance does not exist., instanceDoesNotExist
+# ERROR
 
 
 steps:  
@@ -64,7 +72,7 @@ options:
 
 substitutions:
   _PROJECT_ID: tinder-him
-  _INSTANCE_NAME: him-api-${_GCP_ENV} # If you put him-api-${_GCP_ENV} (the Cloud Run Name), it will fail
+  _INSTANCE_NAME: him-${_GCP_ENV} # If you put him-api-${_GCP_ENV} (the Cloud Run Name), it will fail
   _REGION: europe-west3
   _REGISTERY_URL: europe-west3-docker.pkg.dev/tinder-him/him/him-api
   _PORT: "8000"
