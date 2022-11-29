@@ -48,6 +48,10 @@ class PersonAPISerializer(serializers.Serializer):
 
         return person
 
+class MatchAPISerializer(serializers.Serializer):
+
+    id = serializers.CharField()
+    person = PersonAPISerializer(required=True)
 
 class MessageAPISerializer(serializers.Serializer):
 

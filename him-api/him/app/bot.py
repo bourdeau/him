@@ -41,6 +41,7 @@ class TinderBot(Base):
                 person = person_data.save()
                 likable = person.likable()
                 if likable:
+                    self.current_like += 1
                     self.tinderapi.like(person.id)
                     message = "liked"
                 else:
@@ -64,6 +65,7 @@ class TinderBot(Base):
             return
 
         for match_id, personn_id, person_name in new_matches:
+            self.sleep_long()
             message = MessageTemplate()
             message = message.get_message(person_name)
             self.tinderapi.send_message(match_id, personn_id, message)
@@ -82,17 +84,20 @@ class TinderBot(Base):
             return
 
         for match in matches:
-            messages = self.tinderapi.get_messages(match["id_match"])
+            match_id = match.data["id"]
+            messages = self.tinderapi.get_messages(match_id)
 
-            self.__chat_with_a_match(match, messages)
+            # self.__chat_with_a_match(match, messages)
 
-    def __chat_with_a_match(self, match, messages):
+    def __chat_with_a_match(self, match, messages: list):
 
         chat_data = {"her": match, "chat_history": []}
 
         messages.reverse()
 
         for i, message in enumerate(messages):
+            message = message.data
+
             message["order_id"] = i
             self.save_message_to_db(message)
 

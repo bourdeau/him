@@ -1,6 +1,6 @@
 import requests
 from datetime import datetime
-from him.app.serializers import PersonAPISerializer, MessageAPISerializer
+from him.app.serializers import MatchAPISerializer, PersonAPISerializer, MessageAPISerializer
 from typing import Generator
 from him.settings import config
 
@@ -83,7 +83,7 @@ class TinderAPIClient:
         matches = res["data"]["matches"]
 
         for result in matches:
-            serializer = PersonAPISerializer(data=result)
+            serializer = MatchAPISerializer(data=result)
             serializer.is_valid(raise_exception=True)
 
             yield serializer
@@ -101,12 +101,17 @@ class TinderAPIClient:
         res = self.__request("GET", url=url, params=parmas)
 
         messages = res["data"]["messages"]
+        messages.reverse()
+
+        results = []
 
         for result in messages:
             serializer = MessageAPISerializer(data=result)
             serializer.is_valid(raise_exception=True)
 
-            yield serializer
+            results.append(serializer)
+        
+        return results
 
     def send_message(self, match_id: str, other_id: str, message: str) -> None:
         """
@@ -165,6 +170,8 @@ class TinderAPIClient:
     def get_updates(self):
         """
         Get updates from the Tinder API
+
+        TODO: NOT WORKING
         """
         url = f"/updates"
 

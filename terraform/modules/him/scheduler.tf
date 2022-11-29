@@ -2,7 +2,7 @@
 resource "google_cloud_scheduler_job" "bot_job" {
   name             = "bot-job-${var.stage}"
   description      = "Scheduler for the bot"
-  schedule         = "*/10 10-23 * * *"
+  schedule         = "*/30 9-22 * * *"
   time_zone        = "Europe/Paris"
   attempt_deadline = "1800s"
 
