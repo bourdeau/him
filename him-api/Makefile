@@ -12,20 +12,21 @@ default: help
 
 .PHONY: help
 help:
-	@echo "$(purple)start$(end)                   start all containers as daemons"
-	@echo "$(purple)dev-start$(end)               start all containers"
-	@echo "$(purple)stop$(end)                    stop all containers"
-	@echo "$(purple)shell-him$(end)         bash to him container"
-	@echo "$(purple)migrate$(end)                 apply migrations"
-	@echo "$(purple)makemigrations$(end)          create migrations"
-	@echo "$(purple)collectstatic$(end)           generate Django statics files"
-	@echo "$(purple)load-fixtures$(end)           load the fixtures in the Database"
-	@echo "$(purple)pip-dev$(end)                 install dev requirements"
-	@echo "$(purple)codestyle$(end)               apply codestyle"
-	@echo "$(purple)test$(end)                    run tests"
-	@echo "$(purple)cloud_sql_proxy_prod$(end)    start cloud_sql_proxy for prod"
-	@echo "$(purple)build$(end)                   build the docker image"
-	@echo "$(purple)deploy-prod$(end)             deploy to prod environment"
+	@echo "$(purple)start$(end)                start all containers as daemons"
+	@echo "$(purple)dev-start$(end)            start all containers"
+	@echo "$(purple)stop$(end)                 stop all containers"
+	@echo "$(purple)shell-him$(end)            bash to him container"
+	@echo "$(purple)migrate$(end)              apply migrations"
+	@echo "$(purple)makemigrations$(end)       create migrations"
+	@echo "$(purple)collectstatic$(end)        generate Django statics files"
+	@echo "$(purple)load-fixtures$(end)        load the fixtures in the Database"
+	@echo "$(purple)pip-dev$(end)              install dev requirements"
+	@echo "$(purple)codestyle$(end)            apply codestyle"
+	@echo "$(purple)test$(end)                 run tests"
+	@echo "$(purple)cloud_sql_proxy_prod$(end) start cloud_sql_proxy for prod"
+	@echo "$(purple)create-jwt-user$(end)      create a JWT user"
+	@echo "$(purple)build$(end)                build the docker image"
+	@echo "$(purple)deploy-prod$(end)          deploy to prod environment"
  
 
 .PHONY: start
@@ -85,6 +86,10 @@ test:
 .PHONY: cloud_sql_proxy_prod
 cloud_sql_proxy_prod:
 	cloud_sql_proxy -instances=tinder-him:europe-west3:him-prod=tcp:5432
+
+# .PHONY: create-jwt-user
+# create-jwt-user:
+# 	gcloud builds submit --config gcp-create-user.yaml --substitutions=_GCP_ENV=prod,_USER_NAME=<USER_NAME>,_USER_EMAIL=<EMAIL>,_USER_PASSWORD=<PASSWORD>
 
 .PHONY: build
 build:
