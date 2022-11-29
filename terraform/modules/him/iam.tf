@@ -64,3 +64,11 @@ resource "google_project_iam_member" "secretmanager_secretAccessor" {
   role = "roles/secretmanager.secretAccessor"
   member = "${each.key}"
 }
+
+# Allow Public access to the Cloud Run
+resource "google_cloud_run_service_iam_member" "public" {
+  location = var.region
+  service  = google_cloud_run_service.him_api.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
