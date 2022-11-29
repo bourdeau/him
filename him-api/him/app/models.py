@@ -1,4 +1,5 @@
 from django.db import models
+from him.settings import config
 
 
 class Person(models.Model):
@@ -20,6 +21,18 @@ class Person(models.Model):
     class Meta:
         db_table = "person"
         ordering = ["created_at"]
+
+    def likable(self):
+        """
+        Check if a person is likable
+        """
+        if self.distance_mi <= config["like"]["radius"]:
+            self.liked = True
+            return True
+
+        self.liked = False
+
+        return False
 
 
 class Photo(models.Model):

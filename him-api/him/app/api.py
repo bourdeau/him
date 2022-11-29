@@ -1,7 +1,8 @@
 import requests
 from datetime import datetime
-from him.app.serializers import PersonAPISerializer
+from him.app.serializers import PersonAPISerializer, MessageAPISerializer
 from typing import Generator
+
 
 class TinderAPI:
     """
@@ -10,22 +11,6 @@ class TinderAPI:
 
     def __init__(self, token) -> None:
         self.token = token
-
-    def get_likables(self) -> Generator:
-        """
-        Get a list of users that you can like
-        """
-        res = self.__request("GET", "/recs/core")
-
-        if not res:
-            return
-
-        for result in res["results"]:            
-            serializer = PersonAPISerializer(data=result)
-            serializer.is_valid(raise_exception=True)
-            
-            yield serializer
-
 
     def like(self, user_id: str) -> None:
         """
@@ -39,35 +24,29 @@ class TinderAPI:
         """
         self.__request("POST", f"/pass/{user_id}")
 
-    def get_new_matches(self) -> list:
+    def get_likables(self) -> Generator[PersonAPISerializer]:
         """
-        Get a list of new matches
+        Get a list of users that you can like
         """
-        params = {
-            "count": 60,
-            "message": 1,
-            "is_tinder_u": False,
-        }
+        res = self.__request("GET", "/recs/core")
 
-        res = self.__request("GET", "/v2/matches", params=params)
+        if not res:
+            return
 
-        matches = res["data"]["matches"]
+        for result in res["results"]:
+            serializer = PersonAPISerializer(data=result)
+            serializer.is_valid(raise_exception=True)
 
-        data = []
+            yield serializer
 
-        for match in matches:
-            user = {
-                "id": match["_id"],
-                "name": match["person"]["name"],
-                "bio": match["person"].get("bio"),
-            }
-            data.append(user)
-
-        return data
-
-    def get_matches(self) -> list:
+    def get_matches(self) -> Generator[str]:
         """
-        Get a list of matches
+        Get a list of matches.
+
+        get_matches() and get_new_matches() call the same endpoint
+        but for one Tinder returns a list of matches and for the other
+        it returns a list of new matches.
+
         TODO: count must be the exact number of matches
         """
         params = {
@@ -83,27 +62,32 @@ class TinderAPI:
 
         matches = res["data"]["matches"]
 
-        data = []
+        for result in matches:
+            yield result["id"]
 
-        for match in matches:
-            birth_date = None
 
-            if match["person"].get("birth_date"):
-                birth_date = datetime.strptime(
-                    match["person"]["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                )
-                birth_date = birth_date.date()
+    def get_new_matches(self) -> list:
+        """
+        Get a list of new matches
+        """
+        params = {
+            "count": 60,
+            "message": 0,
+            "is_tinder_u": False,
+        }
 
-            user = {
-                "id_match": match["_id"],
-                "id_profile": match["person"]["_id"],
-                "name": match["person"]["name"],
-                "bio": match["person"].get("bio"),
-                "birth_date": birth_date,
-            }
-            data.append(user)
+        res = self.__request("GET", "/v2/matches", params=params)
 
-        return data
+        if not res:
+            return
+
+        matches = res["data"]["matches"]
+
+        for result in matches:
+            serializer = PersonAPISerializer(data=result)
+            serializer.is_valid(raise_exception=True)
+
+            yield serializer
 
     def get_messages(self, match_id: str) -> list:
         """
@@ -119,18 +103,11 @@ class TinderAPI:
 
         messages = res["data"]["messages"]
 
-        results = []
+        for result in messages:
+            serializer = MessageAPISerializer(data=result)
+            serializer.is_valid(raise_exception=True)
 
-        for message in messages:
-            message = {
-                "id": message["_id"],
-                "person": message["from"],
-                "message": message["message"],
-                "sent_date": message["sent_date"],
-            }
-            results.append(message)
-
-        return results
+            yield serializer
 
     def send_message(self, match_id: str, message: str) -> None:
         """

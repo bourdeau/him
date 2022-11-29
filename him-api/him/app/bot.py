@@ -24,14 +24,13 @@ class TinderBot(Base):
 
     def __like_profiles(self) -> None:
         """
-        Liking new profiles until it reaches MAX_LIKE.
-        It also download the first image of the profile.
+        Liking profiles.
         """
         self.sleep_long()
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
         while self.current_like < config["like"]["max"]:
-            persons_data = self.tinderapi.get_likables()
+            persons_data = self.tinderapi.get_new_matches()
 
             if not persons_data:
                 self.logger.info("No profiles to Like found")
@@ -39,23 +38,16 @@ class TinderBot(Base):
 
             for person_data in persons_data:
                 self.sleep_long()
-                self.logger.info("---------------------------------")
-
                 person = person_data.save()
+                likable = person.likable()
+                message = "disliked"
 
-                self.logger.info("👤 %s", person.name)
-
-                if person.distance_mi <= config["like"]["radius"]:
-                    self.tinderapi.like(person.id)
-                    self.current_like += 1
-                    person.liked = True
-                    self.logger.info("Liked !")
-                else:
-                    self.tinderapi.dislike(person.id)
-                    person.liked = False
-                    self.logger.info("Disliked...")
+                if likable:
+                    message = "liked"
 
                 person.save()
+
+                self.logger.info(f"👤 {person.name}: {message}")
 
     def __send_first_messages(self) -> None:
         """
@@ -63,13 +55,22 @@ class TinderBot(Base):
         """
         self.logger.info("✉️ ✉️ ✉️ SENDING FIRST MESSAGE ✉️ ✉️ ✉️")
 
-        new_matches = self.tinderapi.get_new_matches()
+        new_matches = self.tinderapi.get_matches()
+
+        if not new_matches:
+            self.logger.info("No profiles to Like found")
+            return
 
         for new_match in new_matches:
-            message = Message()
-            message = message.get_message(profile_name=new_match["name"])
-            self.tinderapi.send_message(new_match["id"], message)
-            self.logger.info("Message sent to %s : %s", new_match["name"], message)
+
+            person = new_match.save()
+
+            raise Exception("Not implemented yet")
+
+            # message = Message()
+            # message = message.get_message(profile_name=new_match["name"])
+            # self.tinderapi.send_message(new_match["id"], message)
+            # self.logger.info("Message sent to %s : %s", new_match["name"], message)
 
     def __chat_with_matches(self):
         """
