@@ -94,7 +94,7 @@ terraform fmt
 If you need to connect to the database, please use [cloud_sql_proxy](https://cloud.google.com/sql/docs/mysql/sql-proxy?hl=fr#install) instead of giving it a public access (for obvious reasons).
 
 ```
-cloud_sql_proxy -instances=him:europe-west3:him-prod=tcp:5432
+cloud_sql_proxy -instances=tinder-him:europe-west3:him-prod=tcp:5432
 ```
 
 Then connect to it via Pgadmin or whatever on localhost.

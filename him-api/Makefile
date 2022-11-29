@@ -82,17 +82,9 @@ test:
 	$(DOCKER_BIN) exec -i him coverage html
 	$(DOCKER_BIN) exec -i him coverage-badge -o assets/coverage.svg
 
-.PHONY: cloud_sql_proxy_dev
-cloud_sql_proxy_dev:
-	cloud_sql_proxy -instances=him:europe-west3:him-dev=tcp:5432
-
-.PHONY: cloud_sql_proxy_preprod
-cloud_sql_proxy_preprod:
-	cloud_sql_proxy -instances=him:europe-west3:him-preprod=tcp:5432
-
 .PHONY: cloud_sql_proxy_prod
 cloud_sql_proxy_prod:
-	cloud_sql_proxy -instances=him:europe-west3:him-prod=tcp:5432
+	cloud_sql_proxy -instances=tinder-him:europe-west3:him-prod=tcp:5432
 
 .PHONY: build
 build:
