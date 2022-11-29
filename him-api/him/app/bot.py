@@ -61,16 +61,14 @@ class TinderBot(Base):
             self.logger.info("No profiles to Like found")
             return
 
-        for new_match in new_matches:
+        for id_match, person_name in new_matches:
 
-            person = new_match.save()
+            message = Message()
+            message = message.get_message(person_name)
+            
+            self.tinderapi.send_message(id_match, message)
 
-            raise Exception("Not implemented yet")
-
-            # message = Message()
-            # message = message.get_message(profile_name=new_match["name"])
-            # self.tinderapi.send_message(new_match["id"], message)
-            # self.logger.info("Message sent to %s : %s", new_match["name"], message)
+            self.logger.info("Message sent to %s : %s", id_match, message)
 
     def __chat_with_matches(self):
         """

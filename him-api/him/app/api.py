@@ -39,7 +39,7 @@ class TinderAPI:
 
             yield serializer
 
-    def get_matches(self) -> Generator[str]:
+    def get_matches(self) -> Generator[tuple(str, str)]:
         """
         Get a list of matches.
 
@@ -63,7 +63,7 @@ class TinderAPI:
         matches = res["data"]["matches"]
 
         for result in matches:
-            yield result["id"]
+            yield result["id"], result["person"]["name"]
 
 
     def get_new_matches(self) -> list:
