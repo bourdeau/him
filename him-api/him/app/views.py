@@ -7,6 +7,11 @@ from him.app.models import Person
 from him.app.bot import TinderBot
 
 
+class HealthView(views.APIView):
+    def get(self, request, format=None):
+        return Response({"status": "Ok"})
+
+
 class BotView(views.APIView):
     def get(self, request, format=None):
         bot = TinderBot()

@@ -11,6 +11,7 @@ router.register(r"person", views.PersonViewSet)
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("bot/", views.BotView.as_view(), name="bot"),
+    path("health/", views.HealthView.as_view(), name="health"),
     path("", include(router.urls)),
 ]
 
