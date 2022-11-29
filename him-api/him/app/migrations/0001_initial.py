@@ -8,58 +8,67 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.TextField(primary_key=True, serialize=False)),
-                ('name', models.TextField()),
-                ('gender', models.IntegerField()),
-                ('birth_date', models.DateField(null=True)),
-                ('distance_mi', models.IntegerField(null=True)),
-                ('liked', models.BooleanField(default=False)),
-                ('whitelist', models.BooleanField(default=False)),
-                ('bio', models.TextField(null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
+                ("id", models.TextField(primary_key=True, serialize=False)),
+                ("name", models.TextField()),
+                ("gender", models.IntegerField()),
+                ("birth_date", models.DateField(null=True)),
+                ("distance_mi", models.IntegerField(null=True)),
+                ("liked", models.BooleanField(default=False)),
+                ("whitelist", models.BooleanField(default=False)),
+                ("bio", models.TextField(null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
             ],
             options={
-                'db_table': 'person',
-                'ordering': ['created_at'],
+                "db_table": "person",
+                "ordering": ["created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Photo',
+            name="Photo",
             fields=[
-                ('id', models.TextField(primary_key=True, serialize=False)),
-                ('url', models.TextField()),
-                ('score', models.FloatField(null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.person')),
+                ("id", models.TextField(primary_key=True, serialize=False)),
+                ("url", models.TextField()),
+                ("score", models.FloatField(null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="app.person"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'photo',
-                'ordering': ['created_at'],
+                "db_table": "photo",
+                "ordering": ["created_at"],
             },
         ),
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.TextField(primary_key=True, serialize=False)),
-                ('order_id', models.IntegerField()),
-                ('sent_date', models.DateTimeField(null=True)),
-                ('message', models.TextField()),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('person', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='app.person')),
+                ("id", models.TextField(primary_key=True, serialize=False)),
+                ("order_id", models.IntegerField()),
+                ("sent_date", models.DateTimeField(null=True)),
+                ("message", models.TextField()),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "person",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="app.person"
+                    ),
+                ),
             ],
             options={
-                'db_table': 'message',
-                'ordering': ['created_at'],
+                "db_table": "message",
+                "ordering": ["created_at"],
             },
         ),
     ]

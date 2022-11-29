@@ -1,14 +1,16 @@
 import requests
 from datetime import datetime
 
+
 class TinderAPI:
     """
     TODO: please use Serializer and stop pissing rubbish code...
     """
-    def __init__(self, token):
+
+    def __init__(self, token) -> None:
         self.token = token
 
-    def get_likables(self):
+    def get_likables(self) -> list:
         """
         Get a list of users that you can like
         """
@@ -24,7 +26,9 @@ class TinderAPI:
             birth_date = None
 
         if result.get("birth_date"):
-            birth_date = datetime.strptime(result["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            birth_date = datetime.strptime(
+                result["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
             birth_date = birth_date.date()
 
             user = {
@@ -48,23 +52,29 @@ class TinderAPI:
 
         return data
 
-    def like(self, user_id):
+    def like(self, user_id: str) -> None:
         """
         Like a user
         """
         self.__request("POST", f"/like/{user_id}")
 
-    def dislike(self, user_id):
+    def dislike(self, user_id: str) -> None:
         """
         Dislike a user
         """
         self.__request("POST", f"/pass/{user_id}")
 
-    def get_new_matches(self):
+    def get_new_matches(self) -> list:
         """
         Get a list of new matches
         """
-        res = self.__request("GET", "/v2/matches?count=60&message=0&is_tinder_u=false")
+        params = {
+            "count": 60,
+            "message": 1,
+            "is_tinder_u": False,
+        }
+
+        res = self.__request("GET", "/v2/matches", params=params)
 
         matches = res["data"]["matches"]
 
@@ -74,18 +84,24 @@ class TinderAPI:
             user = {
                 "id": match["_id"],
                 "name": match["person"]["name"],
-                "bio": match["person"]["bio"],
+                "bio": match["person"].get("bio"),
             }
             data.append(user)
 
         return data
 
-    def get_matches(self):
+    def get_matches(self) -> list:
         """
         Get a list of matches
         TODO: count must be the exact number of matches
         """
-        res = self.__request("GET", "/v2/matches?&count=60&message=1&is_tinder_u=false")
+        params = {
+            "count": 60,
+            "message": 1,
+            "is_tinder_u": False,
+        }
+
+        res = self.__request("GET", "/v2/matches", params=params)
 
         if not res:
             return
@@ -98,7 +114,9 @@ class TinderAPI:
             birth_date = None
 
             if match["person"].get("birth_date"):
-                birth_date = datetime.strptime(match["person"]["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ")
+                birth_date = datetime.strptime(
+                    match["person"]["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                )
                 birth_date = birth_date.date()
 
             user = {
@@ -112,13 +130,17 @@ class TinderAPI:
 
         return data
 
-    def get_messages(self, match_id):
+    def get_messages(self, match_id: str) -> list:
         """
         Get messages from a match
         """
-        url = f"/v2/matches/{match_id}/messages?count=100"
+        parmas = {
+            "count": 100,
+        }
 
-        res = self.__request("GET", url)
+        url = f"/v2/matches/{match_id}/messages"
+
+        res = self.__request("GET", url=url, params=parmas)
 
         messages = res["data"]["messages"]
 
@@ -135,7 +157,7 @@ class TinderAPI:
 
         return results
 
-    def send_message(self, match_id, message):
+    def send_message(self, match_id: str, message: str) -> None:
         """
         Send a message to a match
         """
@@ -156,7 +178,9 @@ class TinderAPI:
         birth_date = None
 
         if results.get("birth_date"):
-            birth_date = datetime.strptime(results["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ")
+            birth_date = datetime.strptime(
+                results["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
             birth_date = birth_date.date()
 
         user = {
@@ -176,14 +200,37 @@ class TinderAPI:
                 "score": photo.get("score"),
             }
             user["photos"].append(photo_data)
-        
+
         return user
+
+    def get_updates(self):
+        """
+        Get updates from the Tinder API
+        """
+        url = f"/updates"
+
+        params = {
+            "locale": "fr",
+        }
+
+        data = {"last_activity_date": "2022-11-29T06:06:28.132Z"}
+
+        res = self.__request("POST", url=url, params=params, data=data)
+
+        return res
 
     def __request(self, method, url, headers=None, params=None, data=None):
         """
         Make a request to the Tinder API
         """
-        headers = {"X-Auth-Token": self.token}
+        headers = {
+            "Accept": "application/json",
+            "X-Auth-Token": self.token,
+            "Accept-Language": "fr,fr-FR,en-US,en",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Content-Type": "application/json",
+            "tinder-version": "3.53.0",
+        }
 
         url = "https://api.gotinder.com" + url
 

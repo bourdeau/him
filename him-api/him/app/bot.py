@@ -1,6 +1,5 @@
 from him.settings import config
 
-from him.app.chat import Chat
 from him.app.helpers import Base
 from him.app.message import Message
 from him.app.models import Person, Photo, Message
@@ -16,6 +15,11 @@ class TinderBot(Base):
         """
         Main function which like profiles and send first message.
         """
+        # test = self.tinderapi.get_updates()
+        # print(type(test))
+        # print(test)
+
+        raise Exception
         if config["env"]["like"]:
             self.__like_profiles()
         if config["env"]["send_first_message"]:

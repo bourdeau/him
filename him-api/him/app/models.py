@@ -5,6 +5,7 @@ class Person(models.Model):
     """
     Person model
     """
+
     id = models.TextField(primary_key=True)
     name = models.TextField(null=False)
     gender = models.IntegerField(null=False)
@@ -25,6 +26,7 @@ class Photo(models.Model):
     """
     Photo model
     """
+
     id = models.TextField(primary_key=True)
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     url = models.TextField(null=False)
