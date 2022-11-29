@@ -9,7 +9,7 @@ class MessageTemplate:
     Chat with a Profile.
     """
 
-    def get_message(self, profile_name) -> None:
+    def get_message(self, profile_name) -> str:
         """
         Get message from template
         """

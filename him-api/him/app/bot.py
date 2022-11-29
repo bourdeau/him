@@ -15,12 +15,13 @@ class TinderBot(Base):
         """
         Main function which like profiles and send first message.
         """
-        if config["env"]["like"]:
-            self.__like_profiles()
-        if config["env"]["send_first_message"]:
-            self.__send_first_messages()
-        if config["env"]["chat"]:
-            self.__chat_with_matches()
+        # if config["env"]["like"]:
+        #     self.__like_profiles()
+        # if config["env"]["send_first_message"]:
+        #     self.__send_first_messages()
+        # if config["env"]["chat"]:
+
+        self.__chat_with_matches()
 
     def __like_profiles(self) -> None:
         """
@@ -87,13 +88,12 @@ class TinderBot(Base):
             match_id = match.data["id"]
             messages = self.tinderapi.get_messages(match_id)
 
-            # self.__chat_with_a_match(match, messages)
+            self.__chat_with_a_match(match, messages)
 
     def __chat_with_a_match(self, match, messages: list):
 
         chat_data = {"her": match, "chat_history": []}
 
-        messages.reverse()
 
         for i, message in enumerate(messages):
             message = message.data
@@ -118,9 +118,9 @@ class TinderBot(Base):
         Save the message in the database.
         """
         try:
-            person = Person.objects.get(pk=message["person"])
+            person = Person.objects.get(pk=message["from"])
         except Person.DoesNotExist:
-            person_data = self.tinderapi.get_profile(message["person"])
+            person_data = self.tinderapi.get_profile(message["from"])
 
             photos = person_data["photos"]
             person_data.pop("photos", None)
@@ -134,8 +134,10 @@ class TinderBot(Base):
 
         message["person"] = person
 
+        # raise Exception(message)
+
         try:
-            message = Message.objects.get(pk=message["id"])
+            message = Message.objects.get(pk=message["_id"])
         except Message.DoesNotExist:
             message = Message(**message)
             message.save()
