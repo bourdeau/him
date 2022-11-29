@@ -1,11 +1,12 @@
 env:
-  like: true
-  send_first_message: false
+  like: false
+  send_first_message: true
   chat: false
-x_auth_token: 3a8793f2-cb5f-4f68-828e-d4a87f52decc
-openai_secret: sk-8RDxVvLFzgN0MDfPpZSVT3JlbkFJJk2xZAVyKwWM4OJQPPBV
+x_auth_token: 3a8293f2-cb6f-4f38-428e-a4a87d52decc
+openai_secret: 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
 openai_engine: davinci:ft-personal:tinder-2022-11-27-13-10-13
 your_profile:
+  id: 62d7d7a14e96f00110f1cc11
   name: Pierre
   bio: Pierre est un homme de 39 ans qui aime faire de la voile, de la guitare et du piano. Il aime beaucoup le Gin Tonic. Il a grandi dans une ferme au bord de la mer. Pierre est sur Tinder car il est célibataire depuis quelques mois. Le numéro de téléphone de Pierre est le 0603354235 et il n'hésite pas à le donner.
 like:
@@ -32,18 +33,6 @@ chat:
   - Salut $name ! Ça fait trois fois que j'essaie de trouver l'inspiration sur tes photos, mais je me foire à chaque fois... donc je laisse tomber et je vais retrouver un pote pour boire un verre, ça au moins je sais faire ! \n P.S t'as l'air chouette !
 
 white_list:
-  - 
-    id: 61f44141871bc6010038524c62d7d7a14e95f00100f1cc19
-    name: Felicie
-  - 
-    id: 62d7d7a14e95f00100f1cc196354bcdd8b996801005e4df9
-    name: Charlie
-  - 
-    id: 62d7d7a14e95f00100f1cc19636280d5f7154201002a3cc1
-    name: Fleur
-  - 
-    id: 5fb6fda5ad818a0100bab80b62d7d7a14e95f00100f1cc19
-    name: Karine
   - 
     id: 56850001edd3410648063ee062d7d7a14e95f00100f1cc19
     name: Lola

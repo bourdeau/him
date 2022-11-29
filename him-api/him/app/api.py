@@ -2,6 +2,7 @@ import requests
 from datetime import datetime
 from him.app.serializers import PersonAPISerializer, MessageAPISerializer
 from typing import Generator
+from him.settings import config
 
 
 class TinderAPIClient:
@@ -64,7 +65,6 @@ class TinderAPIClient:
         for match in matches:
             yield match["id"], match["person"]["_id"], match["person"]["name"]
 
-
     def get_matches(self) -> Generator:
         """
         Get a list of matches (i.e. 1 messages).
@@ -118,10 +118,10 @@ class TinderAPIClient:
             "locale": "fr",
         }
         data = {
-            "userId": "62d7d7a14e95f00100f1cc19", # My ID
+            "userId": config["your_profile"]["id"],
             "otherId": other_id,
             "matchId": match_id,
-            "message": message
+            "message": message,
         }
 
         self.__request("POST", url=url, params=params, data=data)
@@ -182,12 +182,9 @@ class TinderAPIClient:
         """
         Make a request to the Tinder API
         """
-        headers = {
-            "X-Auth-Token": self.token
-        }
+        headers = {"X-Auth-Token": self.token}
 
         url = "https://api.gotinder.com" + url
-
 
         if method == "GET":
             r = requests.get(url, headers=headers, params=params)

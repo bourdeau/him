@@ -64,7 +64,6 @@ class TinderBot(Base):
             return
 
         for match_id, personn_id, person_name in new_matches:
-
             message = MessageTemplate()
             message = message.get_message(person_name)
             self.tinderapi.send_message(match_id, personn_id, message)
