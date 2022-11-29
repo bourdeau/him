@@ -1,6 +1,7 @@
 import requests
 from datetime import datetime
-
+from him.app.serializers import PersonAPISerializer
+from typing import Generator
 
 class TinderAPI:
     """
@@ -10,7 +11,7 @@ class TinderAPI:
     def __init__(self, token) -> None:
         self.token = token
 
-    def get_likables(self) -> list:
+    def get_likables(self) -> Generator:
         """
         Get a list of users that you can like
         """
@@ -19,38 +20,12 @@ class TinderAPI:
         if not res:
             return
 
-        data = []
+        for result in res["results"]:            
+            serializer = PersonAPISerializer(data=result)
+            serializer.is_valid(raise_exception=True)
+            
+            yield serializer
 
-        for result in res["results"]:
-
-            birth_date = None
-
-        if result.get("birth_date"):
-            birth_date = datetime.strptime(
-                result["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
-            birth_date = birth_date.date()
-
-            user = {
-                "id": result["_id"],
-                "name": result["name"],
-                "bio": result["bio"],
-                "gender": result["gender"],
-                "birth_date": birth_date,
-                "distance_mi": result["distance_mi"],
-                "photos": [],
-            }
-            for photo in result["photos"]:
-                photo_data = {
-                    "id": photo["id"],
-                    "url": photo["url"],
-                    "score": photo.get("score"),
-                }
-                user["photos"].append(photo_data)
-
-            data.append(user)
-
-        return data
 
     def like(self, user_id: str) -> None:
         """

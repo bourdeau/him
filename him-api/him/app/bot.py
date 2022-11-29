@@ -15,11 +15,6 @@ class TinderBot(Base):
         """
         Main function which like profiles and send first message.
         """
-        # test = self.tinderapi.get_updates()
-        # print(type(test))
-        # print(test)
-
-        raise Exception
         if config["env"]["like"]:
             self.__like_profiles()
         if config["env"]["send_first_message"]:
@@ -36,36 +31,31 @@ class TinderBot(Base):
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
         while self.current_like < config["like"]["max"]:
-            likables = self.tinderapi.get_likables()
+            persons_data = self.tinderapi.get_likables()
 
-            if not likables:
+            if not persons_data:
                 self.logger.info("No profiles to Like found")
                 return
 
-            for likable in likables:
+            for person_data in persons_data:
                 self.sleep_long()
                 self.logger.info("---------------------------------")
-                self.logger.info("👤 %s", likable["name"])
 
-                photos = likable["photos"]
-                likable.pop("photos", None)
-                person = Person(**likable)
+                person = person_data.save()
 
-                if likable["distance_mi"] <= config["like"]["radius"]:
-                    self.tinderapi.like(likable["id"])
+                self.logger.info("👤 %s", person.name)
+
+                if person.distance_mi <= config["like"]["radius"]:
+                    self.tinderapi.like(person.id)
                     self.current_like += 1
                     person.liked = True
                     self.logger.info("Liked !")
                 else:
-                    self.tinderapi.dislike(likable["id"])
+                    self.tinderapi.dislike(person.id)
                     person.liked = False
                     self.logger.info("Disliked...")
 
                 person.save()
-
-                for photo_data in photos:
-                    photo = Photo(**photo_data, person=person)
-                    photo.save()
 
     def __send_first_messages(self) -> None:
         """
