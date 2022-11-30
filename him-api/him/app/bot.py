@@ -37,7 +37,7 @@ class TinderBot(Base):
         self.sleep_long()
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
-        nb_profile_to_like = randint(3, 30)
+        nb_profile_to_like = randint(10, 50)
 
         while self.current_like < nb_profile_to_like:
             persons_data = self.tinderapi.get_likables()

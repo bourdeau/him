@@ -50,6 +50,8 @@ class Chat(Base):
         message_data = chat.talk(context=context, chat_history=shorten_chat_history)
 
         # Send the message
-        self.tinderapi.send_message(match_id=her_id_match, other_id=her_id, message=message_data["message"])
+        self.tinderapi.send_message(
+            match_id=her_id_match, other_id=her_id, message=message_data["message"]
+        )
 
         self.logger.info("✏️ You sent her this message: %s", message_data["message"])
