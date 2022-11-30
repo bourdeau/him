@@ -1,9 +1,8 @@
 from rest_framework import viewsets, views
 from rest_framework.response import Response
 
-
 from him.app.serializers import PersonSerializer
-from him.app.models import Person
+from him.app.models import Person, Message
 from him.app.bot import TinderBot
 
 
@@ -22,3 +21,8 @@ class BotView(views.APIView):
 class PersonViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+
+    # def get_queryset(self):
+    #     return Person.objects.annotate(
+    #         messages=['test', "bla"]
+    #     )

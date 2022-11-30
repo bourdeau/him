@@ -16,13 +16,21 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    messages = MessageSerializer(source='sent_from', many=True)
-    messagesaz = MessageSerializer(source='sent_to', many=True)
     photos = PhotoSerializer(source='person', many=True)
+    messages = serializers.SerializerMethodField()
 
     class Meta:
         model = Person
         fields = "__all__"
+
+    def get_messages(self, obj):
+        messages = obj.sent_from.all() | obj.sent_to.all()
+        return MessageSerializer(messages, many=True).data
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['messages'] = self.get_messages(instance)
+        return representation
 
 
 # API Serializers
