@@ -1,3 +1,4 @@
+from random import randint
 from him.settings import config
 from django.db.models import Q
 from him.app.helpers import Base
@@ -31,7 +32,9 @@ class TinderBot(Base):
         self.sleep_long()
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
-        while self.current_like < config["like"]["max"]:
+        nb_profile_to_like = randint(3, 30)
+
+        while self.current_like < nb_profile_to_like:
             persons_data = self.tinderapi.get_likables()
 
             if not persons_data:
