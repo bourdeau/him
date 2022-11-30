@@ -19,7 +19,7 @@ class Chat(Base):
         """
         chat = Him(api_key=config["openai_secret"])
 
-        her_id_match = chat_data["her"]["id_match"]
+        her_id_match = chat_data["her"]["match_id"]
         her_bio = chat_data["her"].get("bio")
         her_name = chat_data["her"]["name"]
         her_whitelist = chat_data["her"].get("whitelist")
@@ -49,6 +49,6 @@ class Chat(Base):
         message_data = chat.talk(context=context, chat_history=shorten_chat_history)
 
         # Send the message
-        self.tinderapi.send_message(her_id_match, message_data["message"])
+        # self.tinderapi.send_message(her_id_match, message_data["message"])
 
         self.logger.info("✏️ You sent her this message: %s", message_data["message"])

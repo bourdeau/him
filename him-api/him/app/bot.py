@@ -4,6 +4,7 @@ from him.app.helpers import Base
 from him.app.message import MessageTemplate
 from him.app.models import Person, Message
 from him.app.serializers import MatchAPISerializer
+from him.app.chat import Chat
 
 
 class TinderBot(Base):
@@ -153,5 +154,5 @@ class TinderBot(Base):
             }
             chat_history["chat_history"].append(message)
 
-        # chat = Chat()
-        # chat.chat(chat_history)
+        chat = Chat()
+        chat.chat(chat_history)
