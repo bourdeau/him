@@ -8,7 +8,7 @@ resource "google_cloud_scheduler_job" "bot_job" {
 
   http_target {
     http_method = "GET"
-    uri         = "${google_cloud_run_service.him_api.status[0].url}/bot"
+    uri         = "${google_cloud_run_service.him_api.status[0].url}/bot/"
 
     oidc_token {
       service_account_email = data.google_compute_default_service_account.default.email
