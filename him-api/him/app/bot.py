@@ -1,8 +1,10 @@
 from him.settings import config
-
+from django.db.models import Q
 from him.app.helpers import Base
 from him.app.message import MessageTemplate
-from him.app.models import Person, Photo, Message
+from him.app.models import Person, Message
+from him.app.chat import Chat
+from him.app.serializers import MatchAPISerializer
 
 
 class TinderBot(Base):
@@ -84,56 +86,73 @@ class TinderBot(Base):
             return
 
         for match in matches:
-            match_id = match.data["id"] # TODO match.validated 
+            match_id = match.data["id"]  # TODO match.validated
             messages = self.tinderapi.get_messages(match_id)
 
-            self.__chat_with_a_match(match, messages)
+            self.__save_message_to_db(messages)
+            self.__chat_with_a_match(match)
 
-    def __chat_with_a_match(self, match, messages: list):
-
-        #chat_data = {"her": match, "chat_history": []}
-
-        for message in messages:
-            message = message.validated_data
-
-            self.__save_message_to_db(message)
-
-
-
-            # FIX THIS MESS
-            # message_data = {"id": i, "message": message["message"]}
-
-            # if message["person"] == chat_data["her"]["id_profile"]:
-            #     message_data["user"] = chat_data["her"]["name"]
-            # else:
-            #     message_data["user"] = config["your_profile"]["name"]
-
-            # chat_data["chat_history"].append(message_data)
-
-        # chat = Chat()
-        # chat.chat(chat_data)
-
-    def __save_message_to_db(self, message: dict) -> None:
+    def __save_message_to_db(self, messages: list) -> None:
         """
         Save the message in the database.
         """
-        try:
-            sent_from = Person.objects.get(pk=message["sent_from"])
-        except Person.DoesNotExist:
-            person_data = self.tinderapi.get_profile(message["sent_from"])
-            sent_from = person_data.save()
+        for message in messages:
+            message = message.validated_data
 
-        try:
-            sent_to = Person.objects.get(pk=message["sent_to"])
-        except Person.DoesNotExist:
-            person_data = self.tinderapi.get_profile(message["sent_to"])
-            sent_to = person_data.save()
+            try:
+                sent_from = Person.objects.get(pk=message["sent_from"])
+            except Person.DoesNotExist:
+                person_data = self.tinderapi.get_profile(message["sent_from"])
+                sent_from = person_data.save()
 
-        message["sent_from"] = sent_from
-        message["sent_to"] = sent_to
+            try:
+                sent_to = Person.objects.get(pk=message["sent_to"])
+            except Person.DoesNotExist:
+                person_data = self.tinderapi.get_profile(message["sent_to"])
+                sent_to = person_data.save()
 
-        try:
-            message = Message.objects.get(pk=message["id"])
-        except Message.DoesNotExist:
-            message = Message(**message)
-            message.save()
+            message["sent_from"] = sent_from
+            message["sent_to"] = sent_to
+
+            try:
+                message = Message.objects.get(pk=message["id"])
+            except Message.DoesNotExist:
+                message = Message(**message)
+                message.save()
+
+    def __chat_with_a_match(self, match: MatchAPISerializer) -> None:
+        """
+        Build a chat_history with the match for the Chat blot.
+        """
+        match = match.validated_data
+        id_person = match["person"]["id"]
+
+        person = Person.objects.get(pk=id_person)
+
+        chat_history = {
+            "her": {
+                "id": person.id,
+                "match_id": match["id"],
+                "name": person.name,
+                "bio": person.bio,
+                "whitelist": person.whitelist,
+            },
+            "chat_history": [],
+        }
+
+        messages = Message.objects.filter(Q(sent_from=id_person) | Q(sent_to=id_person))
+
+        for message in messages:
+            if message.sent_from.id == id_person:
+                name = person.name
+            else:
+                name = "Pierre"
+
+            message = {
+                "user": name,
+                "message": message.message,
+            }
+            chat_history["chat_history"].append(message)
+
+        chat = Chat()
+        chat.chat(chat_history)

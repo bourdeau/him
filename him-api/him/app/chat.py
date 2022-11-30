@@ -3,6 +3,7 @@ from string import Template
 from him.app.ai import Him
 from him.settings import config
 from him.app.helpers import Base
+from him.app.serializers import MessageAPISerializer
 
 
 class Chat(Base):
@@ -22,6 +23,7 @@ class Chat(Base):
         her_id_match = chat_data["her"]["id_match"]
         her_bio = chat_data["her"].get("bio")
         her_name = chat_data["her"]["name"]
+        her_whitelist = chat_data["her"].get("whitelist")
 
         shorten_chat_history = chat_data["chat_history"][-30:]
 
@@ -33,7 +35,7 @@ class Chat(Base):
             return
 
         # Check if the profile is in the white list
-        if self.__is_in_white_list(her_id_match):
+        if her_whitelist:
             self.logger.info("❌ She is in your whitelist")
             return
 
@@ -52,12 +54,3 @@ class Chat(Base):
 
         self.logger.info("✏️ You sent her this message: %s", message_data["message"])
 
-    def __is_in_white_list(self, her_id: str) -> bool:
-        """
-        Check if the profile is in the white list.
-        """
-        for white in config["white_list"]:
-            if her_id == white["id"]:
-                return True
-
-        return False
