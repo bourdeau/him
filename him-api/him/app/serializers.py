@@ -1,8 +1,25 @@
 from rest_framework import serializers
-from him.app.models import Person, Photo
+from him.app.models import Person, Photo, Message
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Photo
+        fields = "__all__"
+
+class MessageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Message
+        fields = "__all__"
 
 
 class PersonSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(source='sent_from', many=True)
+    messagesaz = MessageSerializer(source='sent_to', many=True)
+    photos = PhotoSerializer(source='person', many=True)
+
     class Meta:
         model = Person
         fields = "__all__"
@@ -60,12 +77,5 @@ class MessageAPISerializer(serializers.Serializer):
     _id = serializers.CharField(source="id")
     sent_date = serializers.DateTimeField()
     sent_from = serializers.CharField()
-    to = serializers.CharField()
+    sent_to = serializers.CharField()
     message = serializers.CharField()
-
-    def get_fields(self):
-        result = super().get_fields()
-        sent_from = result.pop("sent_from")
-        result["from"] = sent_from
-
-        return result

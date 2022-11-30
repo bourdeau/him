@@ -47,10 +47,6 @@ class TinderAPIClient:
     def get_new_matches(self) -> list:
         """
         Get a list of new matches (i.e. 0 messages)
-        get_matches() and get_new_matches() call the same endpoint
-        but for one Tinder returns a list of matches and for the other
-        it returns a list of new matches.
-
         TODO: count must be the exact number of matches
         """
         params = {
@@ -110,6 +106,11 @@ class TinderAPIClient:
         results = []
 
         for result in messages:
+            result["sent_from"] = result["from"]
+            result["sent_to"] = result["to"]
+            del result["from"]
+            del result["to"]
+
             serializer = MessageAPISerializer(data=result)
             serializer.is_valid(raise_exception=True)
 
@@ -141,35 +142,10 @@ class TinderAPIClient:
         if not res:
             return
 
-        results = res["results"]
+        serializer = PersonAPISerializer(data=res["results"])
+        serializer.is_valid(raise_exception=True)
 
-        birth_date = None
-
-        if results.get("birth_date"):
-            birth_date = datetime.strptime(
-                results["birth_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
-            birth_date = birth_date.date()
-
-        user = {
-            "id": results["_id"],
-            "name": results["name"],
-            "bio": results["bio"],
-            "gender": results["gender"],
-            "distance_mi": results["distance_mi"],
-            "birth_date": birth_date,
-            "photos": [],
-        }
-
-        for photo in results["photos"]:
-            photo_data = {
-                "id": photo["id"],
-                "url": photo["url"],
-                "score": photo.get("score"),
-            }
-            user["photos"].append(photo_data)
-
-        return user
+        return serializer
 
     def get_updates(self):
         """
