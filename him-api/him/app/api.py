@@ -1,5 +1,4 @@
 import requests
-from datetime import datetime
 from him.app.serializers import (
     MatchAPISerializer,
     PersonAPISerializer,
@@ -47,20 +46,8 @@ class TinderAPIClient:
     def get_new_matches(self) -> list:
         """
         Get a list of new matches (i.e. 0 messages)
-        TODO: count must be the exact number of matches
         """
-        params = {
-            "count": 60,
-            "message": 0,
-            "is_tinder_u": False,
-        }
-
-        res = self.__request("GET", "/v2/matches", params=params)
-
-        if not res:
-            return
-
-        matches = res["data"]["matches"]
+        matches = self.__process_matches(message=0)
 
         for match in matches:
             yield match["id"], match["person"]["_id"], match["person"]["name"]
@@ -69,24 +56,43 @@ class TinderAPIClient:
         """
         Get a list of matches (i.e. 1 messages).
         """
-        params = {
-            "count": 60,
-            "message": 1,
-            "is_tinder_u": False,
-        }
-
-        res = self.__request("GET", "/v2/matches", params=params)
-
-        if not res:
-            return
-
-        matches = res["data"]["matches"]
+        matches = self.__process_matches(message=1)
 
         for result in matches:
             serializer = MatchAPISerializer(data=result)
             serializer.is_valid(raise_exception=True)
 
             yield serializer
+
+    def __process_matches(self, message: int) -> list:
+        """
+        Process matches.
+        """
+        params = {
+            "count": 60,
+            "message": message,
+            "is_tinder_u": False,
+        }
+
+        matches = []
+        next_page_token = None
+
+        while True:
+            if next_page_token:
+                params["page_token"] = next_page_token
+
+            res = self.__request("GET", "/v2/matches", params=params)
+            next_page_token = res["data"].get("next_page_token")
+
+            if not res:
+                break
+
+            matches = matches + res["data"]["matches"]
+
+            if not next_page_token:
+                break
+
+        return matches
 
     def get_messages(self, match_id: str) -> list:
         """
@@ -146,24 +152,6 @@ class TinderAPIClient:
         serializer.is_valid(raise_exception=True)
 
         return serializer
-
-    def get_updates(self):
-        """
-        Get updates from the Tinder API
-
-        TODO: NOT WORKING
-        """
-        url = f"/updates"
-
-        params = {
-            "locale": "fr",
-        }
-
-        data = {"last_activity_date": "2022-11-29T06:06:28.132Z"}
-
-        res = self.__request("POST", url=url, params=params, data=data)
-
-        return res
 
     def __request(self, method, url, headers=None, params=None, data=None):
         """

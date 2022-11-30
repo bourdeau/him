@@ -3,20 +3,19 @@ from him.app.models import Person, Photo, Message
 
 
 class PhotoSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Photo
         fields = "__all__"
 
-class MessageSerializer(serializers.ModelSerializer):
 
+class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = "__all__"
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(source='person', many=True)
+    photos = PhotoSerializer(source="person", many=True)
     messages = serializers.SerializerMethodField()
 
     class Meta:
@@ -29,7 +28,7 @@ class PersonSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['messages'] = self.get_messages(instance)
+        representation["messages"] = self.get_messages(instance)
         return representation
 
 
@@ -69,7 +68,6 @@ class PersonAPISerializer(serializers.Serializer):
             photo = Photo(**photo_data)
             photo.person = person
             photo.save()
-            person.photo_set.add(photo)
 
         return person
 

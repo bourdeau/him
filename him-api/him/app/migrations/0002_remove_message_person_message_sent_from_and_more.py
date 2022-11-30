@@ -7,22 +7,32 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ("app", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='message',
-            name='person',
+            model_name="message",
+            name="person",
         ),
         migrations.AddField(
-            model_name='message',
-            name='sent_from',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='sent_from', to='app.person'),
+            model_name="message",
+            name="sent_from",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sent_from",
+                to="app.person",
+            ),
         ),
         migrations.AddField(
-            model_name='message',
-            name='sent_to',
-            field=models.ForeignKey(default=None, on_delete=django.db.models.deletion.CASCADE, related_name='sent_to', to='app.person'),
+            model_name="message",
+            name="sent_to",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="sent_to",
+                to="app.person",
+            ),
         ),
     ]

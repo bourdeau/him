@@ -7,17 +7,21 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_remove_message_person_message_sent_from_and_more'),
+        ("app", "0002_remove_message_person_message_sent_from_and_more"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='message',
-            options={'ordering': ['sent_date']},
+            name="message",
+            options={"ordering": ["sent_date"]},
         ),
         migrations.AlterField(
-            model_name='photo',
-            name='person',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='person', to='app.person'),
+            model_name="photo",
+            name="person",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="person",
+                to="app.person",
+            ),
         ),
     ]

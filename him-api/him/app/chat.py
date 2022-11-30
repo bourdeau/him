@@ -3,7 +3,6 @@ from string import Template
 from him.app.ai import Him
 from him.settings import config
 from him.app.helpers import Base
-from him.app.serializers import MessageAPISerializer
 
 
 class Chat(Base):
@@ -53,4 +52,3 @@ class Chat(Base):
         self.tinderapi.send_message(her_id_match, message_data["message"])
 
         self.logger.info("✏️ You sent her this message: %s", message_data["message"])
-

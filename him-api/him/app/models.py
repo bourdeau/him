@@ -12,7 +12,7 @@ class Person(models.Model):
     gender = models.IntegerField(null=False)
     birth_date = models.DateField(null=True)
     distance_mi = models.IntegerField(null=True)
-    liked = models.BooleanField(null=False, default=False)
+    liked = models.BooleanField(null=False, default=True)
     whitelist = models.BooleanField(null=False, default=False)
     bio = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,7 +41,7 @@ class Photo(models.Model):
     """
 
     id = models.TextField(primary_key=True)
-    person = models.ForeignKey(Person, related_name='person', on_delete=models.CASCADE)
+    person = models.ForeignKey(Person, related_name="person", on_delete=models.CASCADE)
     url = models.TextField(null=False)
     score = models.FloatField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -58,8 +58,12 @@ class Message(models.Model):
     """
 
     id = models.TextField(primary_key=True)
-    sent_from = models.ForeignKey(Person, default=None, related_name='sent_from', on_delete=models.CASCADE)
-    sent_to = models.ForeignKey(Person, default=None, related_name='sent_to', on_delete=models.CASCADE)
+    sent_from = models.ForeignKey(
+        Person, default=None, related_name="sent_from", on_delete=models.CASCADE
+    )
+    sent_to = models.ForeignKey(
+        Person, default=None, related_name="sent_to", on_delete=models.CASCADE
+    )
     sent_date = models.DateTimeField(null=True)
     message = models.TextField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
