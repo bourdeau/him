@@ -19,11 +19,16 @@ class TinderBot(Base):
         Main function which like profiles and send first message.
         """
         if config["env"]["like"]:
-            self.__like_profiles()
+            rand_like = randint(0, 1)
+            if rand_like == 1:
+                self.__like_profiles()
         if config["env"]["send_first_message"]:
+            # No rand here
             self.__send_first_messages()
         if config["env"]["chat"]:
-            self.__chat_with_matches()
+            rand_chat = randint(0, 10)
+            if rand_chat > 7:
+                self.__chat_with_matches()
 
     def __like_profiles(self) -> None:
         """
