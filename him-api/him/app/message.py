@@ -1,7 +1,6 @@
 import random
 from string import Template
-
-from him.settings import config
+from him.app.models import MessageTemplate as MessageTemplateModel
 
 
 class MessageTemplate:
@@ -13,7 +12,12 @@ class MessageTemplate:
         """
         Get message from template
         """
-        msg_template = random.choice(config["chat"]["first_messages"])
-        message = Template(msg_template).substitute(name=profile_name)
+        templates = MessageTemplateModel.objects.all()
+
+        msg_tpl = random.choice(templates)
+        msg_tpl.nb_sent += 1
+        msg_tpl.save()
+
+        message = Template(msg_tpl.message).substitute(name=profile_name)
 
         return message

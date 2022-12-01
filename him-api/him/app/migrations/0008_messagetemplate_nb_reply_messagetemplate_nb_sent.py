@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0007_messagetemplate'),
+        ("app", "0007_messagetemplate"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='messagetemplate',
-            name='nb_reply',
+            model_name="messagetemplate",
+            name="nb_reply",
             field=models.IntegerField(null=True),
         ),
         migrations.AddField(
-            model_name='messagetemplate',
-            name='nb_sent',
+            model_name="messagetemplate",
+            name="nb_sent",
             field=models.IntegerField(null=True),
         ),
     ]

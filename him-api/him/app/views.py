@@ -1,4 +1,4 @@
-from rest_framework import viewsets, views
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
@@ -10,7 +10,7 @@ from him.app.models import Person, MessageTemplate
 from him.app.bot import TinderBot
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def bot_like_profiles(request):
     if config["env"]["like"]:
         rand_like = randint(0, 1)
@@ -21,13 +21,14 @@ def bot_like_profiles(request):
     return Response({"status": "Liked"})
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def bot_send_first_messages(request):
     bot = TinderBot()
     bot.send_first_messages()
     return Response({"status": "Liked"})
 
-@api_view(['GET'])
+
+@api_view(["GET"])
 def bot_chat_with_matches(request):
     if config["env"]["chat"]:
         rand_chat = randint(0, 10)
@@ -38,14 +39,15 @@ def bot_chat_with_matches(request):
     return Response({"status": "Ok"})
 
 
-class PersonViewSet(viewsets.ReadOnlyModelViewSet):
+class PersonViewSet(viewsets.ModelViewSet):
     """
-    Returns a list of all the persons.
+    PersonViewSet.
     """
 
     permission_classes = [IsAuthenticated]
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+
 
 class MessageTemplateViewSet(viewsets.ModelViewSet):
     """

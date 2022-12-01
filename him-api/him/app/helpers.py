@@ -58,7 +58,7 @@ def find_phone_number(text: str):
     phone = re.search(
         r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}", text
     )
-    
+
     if phone:
         return phone.group()
 

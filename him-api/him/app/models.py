@@ -75,6 +75,7 @@ class Message(models.Model):
         db_table = "message"
         ordering = ["sent_date"]
 
+
 class MessageTemplate(models.Model):
     """
     MessageTemplate model

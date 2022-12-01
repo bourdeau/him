@@ -44,6 +44,7 @@ class PersonSerializer(serializers.ModelSerializer):
         representation["messages"] = self.get_messages(instance)
         return representation
 
+
 class MessageTemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = MessageTemplate
@@ -103,4 +104,3 @@ class MessageAPISerializer(serializers.Serializer):
     sent_from = serializers.CharField()
     sent_to = serializers.CharField()
     message = serializers.CharField()
-
