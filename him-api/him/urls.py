@@ -8,6 +8,7 @@ from him.app import views
 
 router = routers.DefaultRouter()
 router.register(r"person", views.PersonViewSet)
+router.register(r"message-template", views.MessageTemplateViewSet)
 
 urlpatterns = [
     # Login browsable API Doc

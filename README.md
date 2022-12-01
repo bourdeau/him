@@ -11,10 +11,12 @@ Him is here to re-establish genders equality on Tinder.
 - Like profile depending on your configuration
 - Send the first message based on a list
 - Chat with your matches using OpenAI davinci
+- Detect phone number in conversation and add your match to a whitelist
 
 ## Projects
 
 This project contain 2 subprojects:
 - [him-api](./him-api/): written in Python with [Django REST](https://www.django-rest-framework.org) framework
 - [terraform](./terraform/): for the IAC for the him-api
-- a frontend with [Angular](https://angular.io)
+
+A frontend written with [Angular](https://angular.io) is coming.
