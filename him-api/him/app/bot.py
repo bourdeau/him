@@ -19,7 +19,6 @@ class TinderBot(Base):
         """
         Liking profiles.
         """
-        self.sleep_long()
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
         nb_profile_to_like = randint(10, 50)
@@ -79,6 +78,7 @@ class TinderBot(Base):
             return
 
         for match in matches:
+            self.sleep_long()
             match_id = match.data["id"]  # TODO match.validated
             messages = self.tinderapi.get_messages(match_id)
 
