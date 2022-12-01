@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from him.settings import config
 
@@ -73,3 +74,19 @@ class Message(models.Model):
     class Meta:
         db_table = "message"
         ordering = ["sent_date"]
+
+class MessageTemplate(models.Model):
+    """
+    MessageTemplate model
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    message = models.TextField(null=False)
+    nb_sent = models.IntegerField(null=True)
+    nb_reply = models.IntegerField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "message_template"
+        ordering = ["created_at"]
