@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from him.app.models import Person, Photo, Message
+from him.app.models import Person, Photo, Message, MessageTemplate
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -43,6 +43,11 @@ class PersonSerializer(serializers.ModelSerializer):
         representation = super().to_representation(instance)
         representation["messages"] = self.get_messages(instance)
         return representation
+
+class MessageTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MessageTemplate
+        fields = "__all__"
 
 
 # API Serializers
@@ -98,3 +103,4 @@ class MessageAPISerializer(serializers.Serializer):
     sent_from = serializers.CharField()
     sent_to = serializers.CharField()
     message = serializers.CharField()
+

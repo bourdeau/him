@@ -5,8 +5,8 @@ from rest_framework.decorators import api_view
 from him.settings import config
 from random import randint
 
-from him.app.serializers import PersonSerializer
-from him.app.models import Person
+from him.app.serializers import PersonSerializer, MessageTemplateSerializer
+from him.app.models import Person, MessageTemplate
 from him.app.bot import TinderBot
 
 
@@ -46,3 +46,12 @@ class PersonViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
+
+class MessageTemplateViewSet(viewsets.ModelViewSet):
+    """
+    MessageTemplate.
+    """
+
+    permission_classes = [IsAuthenticated]
+    queryset = MessageTemplate.objects.all()
+    serializer_class = MessageTemplateSerializer
