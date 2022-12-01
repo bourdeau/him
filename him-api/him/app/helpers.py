@@ -55,10 +55,11 @@ def find_phone_number(text: str):
     """
     Find a French phone number in a string.
     """
-    phone = re.findall(
+    phone = re.search(
         r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}", text
     )
+    
     if phone:
-        return phone[0]
+        return phone.group()
 
     return None
