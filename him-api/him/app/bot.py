@@ -15,23 +15,7 @@ class TinderBot(Base):
 
         self.current_like = 0
 
-    def run(self) -> None:
-        """
-        Main function which like profiles and send first message.
-        """
-        if config["env"]["like"]:
-            rand_like = randint(0, 1)
-            if rand_like == 1:
-                self.__like_profiles()
-        if config["env"]["send_first_message"]:
-            # No rand here
-            self.__send_first_messages()
-        if config["env"]["chat"]:
-            rand_chat = randint(0, 10)
-            if rand_chat > 7:
-                self.__chat_with_matches()
-
-    def __like_profiles(self) -> None:
+    def like_profiles(self) -> None:
         """
         Liking profiles.
         """
@@ -63,7 +47,7 @@ class TinderBot(Base):
 
                 self.logger.info(f"👤 {person.name}: {message}")
 
-    def __send_first_messages(self) -> None:
+    def send_first_messages(self) -> None:
         """
         Send first message to all the new matches in the left panel.
         """
@@ -83,7 +67,7 @@ class TinderBot(Base):
 
             self.logger.info("✉️ sent to %s : %s", person_name, message)
 
-    def __chat_with_matches(self):
+    def chat_with_matches(self):
         """
         Chat with all the matches in the left panel.
         """
