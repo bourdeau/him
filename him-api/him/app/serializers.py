@@ -20,7 +20,20 @@ class PersonSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Person
-        fields = "__all__"
+        fields = [
+            "id",
+            "name",
+            "gender",
+            "birth_date",
+            "distance_mi",
+            "liked",
+            "whitelist",
+            "bio",
+            "messages",
+            "photos",
+            "created_at",
+            "updated_at",
+        ]
 
     def get_messages(self, obj):
         messages = obj.sent_from.all() | obj.sent_to.all()

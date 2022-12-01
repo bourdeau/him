@@ -6,6 +6,7 @@ from him.app.message import MessageTemplate
 from him.app.models import Person, Message
 from him.app.serializers import MatchAPISerializer
 from him.app.chat import Chat
+from him.app.helpers import find_phone_number
 
 
 class TinderBot(Base):
@@ -118,6 +119,15 @@ class TinderBot(Base):
             except Person.DoesNotExist:
                 person_data = self.tinderapi.get_profile(message["sent_to"])
                 sent_to = person_data.save()
+
+            # If a phone number is found in a message
+            if sent_from.id != config["your_profile"]["id"]:
+                phone_number = find_phone_number(message["message"])
+                if phone_number:
+                    sent_from.phone_number = phone_number
+                    sent_from.whitelist = True
+                    sent_from.save()
+                    self.logger.info(f"📞 Phone number {phone_number} found")
 
             message["sent_from"] = sent_from
             message["sent_to"] = sent_to

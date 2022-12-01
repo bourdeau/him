@@ -15,6 +15,7 @@ class Person(models.Model):
     liked = models.BooleanField(null=False, default=True)
     whitelist = models.BooleanField(null=False, default=False)
     bio = models.TextField(null=True)
+    phone_number = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
