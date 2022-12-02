@@ -37,21 +37,21 @@ steps:
         "migrate",
       ]
 
-  - id: "Collectstatic: -> "
-    name: "gcr.io/google-appengine/exec-wrapper"
-    args:
-      [
-        "-i", "${_REGISTERY_URL}",
-        "-s", "${_PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
-        "-e", "SETTINGS_NAME=django_settings-${_GCP_ENV}",
-        "--",
-        "python",
-        "manage.py",
-        "collectstatic",
-        "--verbosity",
-        "2",
-        "--no-input",
-      ]
+  # - id: "Collectstatic: -> "
+  #   name: "gcr.io/google-appengine/exec-wrapper"
+  #   args:
+  #     [
+  #       "-i", "${_REGISTERY_URL}",
+  #       "-s", "${_PROJECT_ID}:${_REGION}:${_INSTANCE_NAME}",
+  #       "-e", "SETTINGS_NAME=django_settings-${_GCP_ENV}",
+  #       "--",
+  #       "python",
+  #       "manage.py",
+  #       "collectstatic",
+  #       "--verbosity",
+  #       "2",
+  #       "--no-input",
+  #     ]
 
   - id: "Deploy container: -> "
     name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim

@@ -15,7 +15,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    photos = PhotoSerializer(source="person", many=True)
+    photos = PhotoSerializer(required=False, source="person", many=True)
     messages = serializers.SerializerMethodField()
 
     class Meta:

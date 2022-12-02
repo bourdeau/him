@@ -74,6 +74,11 @@ INSTALLED_APPS = [
     "him.app",
 ]
 
+"""
+The SITE_ID setting specifies the database ID of the Site object associated with that particular settings file.
+If the setting is omitted, the get_current_site() function will try to get the current site by comparing
+the domain with the host name from the request.get_host() method.
+"""
 SITE_ID = 1
 
 MIDDLEWARE = [
