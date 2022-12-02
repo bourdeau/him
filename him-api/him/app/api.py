@@ -34,7 +34,7 @@ class TinderAPIClient:
         """
         res = self.__request("GET", "/recs/core")
 
-        if not res:
+        if not res or not "results" in res:
             return
 
         for result in res["results"]:
