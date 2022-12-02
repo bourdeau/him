@@ -83,8 +83,8 @@ class MessageTemplate(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     message = models.TextField(null=False)
-    nb_sent = models.IntegerField(null=True)
-    nb_reply = models.IntegerField(null=True)
+    nb_sent = models.IntegerField(null=False, default=0)
+    nb_reply = models.IntegerField(null=False, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
