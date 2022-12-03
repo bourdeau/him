@@ -78,7 +78,6 @@ class TinderBot(Base):
             return
 
         for match in matches:
-            self.sleep_short()
             match_id = match.data["id"]  # TODO match.validated
             messages = self.tinderapi.get_messages(match_id)
 
