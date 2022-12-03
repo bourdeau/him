@@ -14,6 +14,7 @@ class Person(models.Model):
     birth_date = models.DateField(null=True)
     distance_mi = models.IntegerField(null=True)
     liked = models.BooleanField(null=False, default=True)
+    match = models.BooleanField(null=False, default=False)
     whitelist = models.BooleanField(null=False, default=False)
     bio = models.TextField(null=True)
     phone_number = models.TextField(null=True)

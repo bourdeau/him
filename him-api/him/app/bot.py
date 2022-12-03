@@ -103,8 +103,12 @@ class TinderBot(Base):
                 person_data = self.tinderapi.get_profile(message["sent_to"])
                 sent_to = person_data.save()
 
-            # If a phone number is found in a message
             if sent_from.id != config["your_profile"]["id"]:
+               sent_from.match = True
+               sent_from.save()
+
+            # If a phone number is found in a message
+            if sent_from.id != config["your_profile"]["id"] and not sent_from.phone_number:
                 phone_number = find_phone_number(message["message"])
                 if phone_number:
                     sent_from.phone_number = phone_number
