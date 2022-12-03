@@ -50,9 +50,9 @@ class Him:
             max_tokens=1500,
         )
 
-        return response.choices[0].text.strip()
+        return response.choices[0].text.strip()  # type: ignore
 
-    def __format_response(self, response) -> list:
+    def __format_response(self, response: str) -> list:
         """
         Fromat the response a dict
         """
@@ -61,4 +61,4 @@ class Him:
         line = responses[0]
         line_list = line.split(f"{self.your_name}: ")
 
-        return {"user": self.your_name, "message": line_list[1].lstrip()}
+        return {"user": self.your_name, "message": line_list[1].lstrip()}  # type: ignore

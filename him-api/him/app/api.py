@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import requests
 from him.app.serializers import (
     MatchAPISerializer,
@@ -43,7 +45,7 @@ class TinderAPIClient:
 
             yield serializer
 
-    def get_new_matches(self) -> list:
+    def get_new_matches(self) -> Generator:
         """
         Get a list of new matches (i.e. 0 messages)
         """
@@ -52,7 +54,7 @@ class TinderAPIClient:
         for match in matches:
             yield match["id"], match["person"]["_id"], match["person"]["name"]
 
-    def get_matches(self):
+    def get_matches(self) -> Generator:
         """
         Get a list of matches (i.e. 1 messages).
         """
