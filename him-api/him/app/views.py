@@ -34,7 +34,7 @@ def bot_send_first_messages(request):
 def bot_chat_with_matches(request):
     if config["env"]["chat"]:
         rand_chat = randint(0, 10)
-        if rand_chat > 7:
+        if rand_chat > 6:
             bot = TinderBot()
             bot.chat_with_matches()
 

@@ -37,7 +37,7 @@ resource "google_cloud_scheduler_job" "bot_chat_with_matches" {
   name             = "bot-chat-with-matches-${var.stage}"
   region           = var.region
   description      = "Scheduler for the bot"
-  schedule         = "*/5 10-23 * * *"
+  schedule         = "*/2 10-23 * * *"
   time_zone        = "Europe/Paris"
   attempt_deadline = "1800s"
 
