@@ -81,8 +81,22 @@ class TinderBot(Base):
             match_id = match.data["id"]  # TODO match.validated
             messages = self.tinderapi.get_messages(match_id)
 
+            self.__save_person_to_db(match)
             self.__save_message_to_db(messages)
             self.__chat_with_a_match(match)
+
+    def __save_person_to_db(self, match: list) -> None:
+
+        match = match.validated_data
+
+        try:
+            person = Person.objects.get(pk=match["person"]["id"])
+        except Person.DoesNotExist:
+            person = self.tinderapi.get_profile(match["person"]["id"])
+        
+        person.match = True
+        person.save()
+    
 
     def __save_message_to_db(self, messages: list) -> None:
         """
@@ -91,17 +105,9 @@ class TinderBot(Base):
         for message in messages:
             message = message.validated_data
 
-            try:
-                sent_from = Person.objects.get(pk=message["sent_from"])
-            except Person.DoesNotExist:
-                person_data = self.tinderapi.get_profile(message["sent_from"])
-                sent_from = person_data.save()
+            sent_from = Person.objects.get(pk=message["sent_from"])
+            sent_to = Person.objects.get(pk=message["sent_to"])
 
-            try:
-                sent_to = Person.objects.get(pk=message["sent_to"])
-            except Person.DoesNotExist:
-                person_data = self.tinderapi.get_profile(message["sent_to"])
-                sent_to = person_data.save()
 
             if sent_from.id != config["your_profile"]["id"]:
                sent_from.match = True
