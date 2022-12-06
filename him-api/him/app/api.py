@@ -60,8 +60,8 @@ class TinderAPIClient:
         """
         matches = self.__process_matches(message=1)
 
-        for result in matches:
-            serializer = MatchAPISerializer(data=result)
+        for match in matches:
+            serializer = MatchAPISerializer(data=match)
             serializer.is_valid(raise_exception=True)
 
             yield serializer

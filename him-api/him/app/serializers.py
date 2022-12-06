@@ -1,5 +1,8 @@
 from rest_framework import serializers
-from him.app.models import Person, Photo, Message, MessageTemplate
+from him.app.models import Person, Photo, Message, MessageTemplate, Match
+from him.settings import config
+import re
+
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -92,15 +95,118 @@ class PersonAPISerializer(serializers.Serializer):
 
 
 class MatchAPISerializer(serializers.Serializer):
-
+    """
+    MatchAPISerializer.
+    """
     id = serializers.CharField()
-    person = PersonAPISerializer(required=True)
+    closed = serializers.BooleanField()
+    common_like_count = serializers.IntegerField()
+    created_date = serializers.DateTimeField()
+    dead = serializers.BooleanField()
+    last_activity_date = serializers.DateTimeField()
+    message_count = serializers.IntegerField()
+    pending = serializers.BooleanField()
+    is_super_like = serializers.BooleanField()
+    is_boost_match = serializers.BooleanField()
+    is_super_boost_match = serializers.BooleanField()
+    is_primetime_boost_match = serializers.BooleanField()
+    is_experiences_match = serializers.BooleanField()
+    is_fast_match = serializers.BooleanField()
+    is_preferences_match = serializers.BooleanField()
+    is_matchmaker_match = serializers.BooleanField()
+    is_opener = serializers.BooleanField()
+    has_shown_initial_interest = serializers.BooleanField()
+    person = PersonAPISerializer()
+    following = serializers.BooleanField()
+    following_moments = serializers.BooleanField()
+    subscription_tier = serializers.CharField(required=False)
+    is_archived = serializers.BooleanField()
+
+
+    def create(self, validated_data):
+
+        person_2 = validated_data.pop("person")
+        person_2.pop("photos")
+
+        try:
+            person_2 = Person.objects.get(pk=person_2["id"])
+        except Person.DoesNotExist:
+            person_2 = Person(**person_2)
+        
+
+        person_2.match = True
+        person_2.save()
+
+        try:
+            person_1 = Person.objects.get(id=config["your_profile"]["id"])
+        except Person.DoesNotExist:
+            person_1 = Person(id=config["your_profile"]["id"], gender=1, name="Pierre")
+            person_1.save()
+    
+
+        validated_data["person_1"] = person_1
+        validated_data["person_2"] = person_2
+
+        try:
+            match = Match.objects.get(pk=validated_data["id"])
+        except Match.DoesNotExist:
+            match = Match(**validated_data)
+            match.save()
+
+        return match
 
 
 class MessageAPISerializer(serializers.Serializer):
 
     _id = serializers.CharField(source="id")
+    matchId = serializers.CharField(source="match_id")
     sent_date = serializers.DateTimeField()
     sent_from = serializers.CharField()
     sent_to = serializers.CharField()
     message = serializers.CharField()
+
+    def create(self, validated_data):
+
+        match_id = validated_data.pop("match_id")
+
+        match = Match.objects.get(pk=match_id)
+        sent_from = Person.objects.get(pk=validated_data["sent_from"])
+        sent_to = Person.objects.get(pk=validated_data["sent_to"])
+
+
+        if sent_from.id != config["your_profile"]["id"]:
+            sent_from.match = True
+            sent_from.save()
+
+        validated_data["match"] = match
+        validated_data["sent_from"] = sent_from
+        validated_data["sent_to"] = sent_to
+
+        if sent_from.id != config["your_profile"]["id"] and not sent_from.phone_number:
+            phone_number = self.find_phone_number(validated_data["message"])
+            if phone_number:
+                sent_from.phone_number = phone_number
+                sent_from.whitelist = True
+                sent_from.save()
+
+        try:
+            message = Message.objects.get(pk=validated_data["id"])
+        except Message.DoesNotExist:
+            message = Message(**validated_data)
+            message.save()
+
+        return message
+
+
+    def find_phone_number(self, text: str):
+        """
+        Find a French phone number in a string.
+        """
+        phone = re.search(
+            r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}", text
+        )
+
+        if phone:
+            return phone.group()
+
+        return None

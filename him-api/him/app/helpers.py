@@ -49,17 +49,3 @@ def get_list_files(relative_path_dir: str, extension=".json"):
             and pathlib.Path(join(files_path, f)).suffix == extension
         ):
             yield join(files_path, f)
-
-
-def find_phone_number(text: str):
-    """
-    Find a French phone number in a string.
-    """
-    phone = re.search(
-        r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}", text
-    )
-
-    if phone:
-        return phone.group()
-
-    return None

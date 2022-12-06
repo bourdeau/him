@@ -6,7 +6,6 @@ from him.app.message import MessageTemplate
 from him.app.models import Person, Message
 from him.app.serializers import MatchAPISerializer
 from him.app.chat import Chat
-from him.app.helpers import find_phone_number
 
 
 class TinderBot(Base):
@@ -21,7 +20,7 @@ class TinderBot(Base):
         """
         self.logger.info("❤️ ❤️ ❤️  LIKING PROFILES ❤️ ❤️ ❤️")
 
-        nb_profile_to_like = randint(10, 50)
+        nb_profile_to_like = randint(3, 30)
 
         while self.current_like < nb_profile_to_like:
             persons_data = self.tinderapi.get_likables()
@@ -78,64 +77,25 @@ class TinderBot(Base):
             return
 
         for match in matches:
-            match_id = match.data["id"]  # TODO match.validated
-            messages = self.tinderapi.get_messages(match_id)
+            match.save()
+            match_data = match.validated_data
+            
+            self.__save_message_to_db(match_data["id"])
+            self.__chat_with_a_match(match_data)
 
-            self.__save_person_to_db(match)
-            self.__save_message_to_db(messages)
-            self.__chat_with_a_match(match)
-
-    def __save_person_to_db(self, match: list) -> None:
-
-        match = match.validated_data
-
-        try:
-            person = Person.objects.get(pk=match["person"]["id"])
-        except Person.DoesNotExist:
-            person = self.tinderapi.get_profile(match["person"]["id"])
-        
-        person.match = True
-        person.save()
-    
-
-    def __save_message_to_db(self, messages: list) -> None:
+    def __save_message_to_db(self, match_id: str) -> None:
         """
         Save the message in the database.
         """
+        messages = self.tinderapi.get_messages(match_id)
+
         for message in messages:
-            message = message.validated_data
+            message.save()
 
-            sent_from = Person.objects.get(pk=message["sent_from"])
-            sent_to = Person.objects.get(pk=message["sent_to"])
-
-
-            if sent_from.id != config["your_profile"]["id"]:
-               sent_from.match = True
-               sent_from.save()
-
-            # If a phone number is found in a message
-            if sent_from.id != config["your_profile"]["id"] and not sent_from.phone_number:
-                phone_number = find_phone_number(message["message"])
-                if phone_number:
-                    sent_from.phone_number = phone_number
-                    sent_from.whitelist = True
-                    sent_from.save()
-                    self.logger.info(f"📞 Phone number {phone_number} found")
-
-            message["sent_from"] = sent_from
-            message["sent_to"] = sent_to
-
-            try:
-                message = Message.objects.get(pk=message["id"])
-            except Message.DoesNotExist:
-                message = Message(**message)
-                message.save()
-
-    def __chat_with_a_match(self, match: MatchAPISerializer) -> None:
+    def __chat_with_a_match(self, match: dict) -> None:
         """
         Build a chat_history with the match for the Chat blot.
         """
-        match = match.validated_data
         id_person = match["person"]["id"]
 
         person = Person.objects.get(pk=id_person)
