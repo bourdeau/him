@@ -6,6 +6,10 @@ from him.app.serializers import (
     PersonAPISerializer,
     MessageAPISerializer,
 )
+
+import json
+import datetime
+
 from typing import Generator
 from him.settings import config
 
@@ -159,7 +163,10 @@ class TinderAPIClient:
         """
         Make a request to the Tinder API
         """
-        headers = {"X-Auth-Token": self.token}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
+            "X-Auth-Token": self.token
+        }
 
         url = "https://api.gotinder.com" + url
 
@@ -174,3 +181,333 @@ class TinderAPIClient:
             return None
 
         return r.json()
+
+
+
+class BumbleAPIClient:
+    def __init__(self, cookie):
+        self.cookie = cookie
+
+
+    def like(self, user_id):
+        """
+        Like a profile.
+        """
+
+        ping_back = "5c67acc00d1f1f8a157bb855bce1c1db"
+
+        url = "SERVER_ENCOUNTERS_VOTE"
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 80,
+                    "server_encounters_vote": {
+                        "person_id": user_id,
+                        "vote": 2,
+                        "vote_source": 1,
+                        "game_mode": 0,
+                    },
+                }
+            ],
+            "message_id": 1,
+            "message_type": 80,
+            "version": 1,
+            "is_background": False,
+        }
+
+        res = self.__request("POST", url, data, ping_back=ping_back)
+
+        print(res)
+
+    def dislike(self, user_id):
+        """
+        Dislike a profile.
+        message_id += 2
+        """
+        message_id = 19
+
+        url = "SERVER_ENCOUNTERS_VOTE"
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 80,
+                    "server_encounters_vote": {
+                        "person_id": user_id,
+                        "vote": 3,
+                        "vote_source": 1,
+                        "game_mode": 0,
+                    },
+                }
+            ],
+            "message_id": 26,
+            "message_type": 80,
+            "version": 1,
+            "is_background": False,
+        }
+
+        self.__request("POST", url, data)
+
+    def get_encounters(self):
+        """
+        Pagination is with last person_id:
+
+            {"$gpb":"badoo.bma.BadooMessage","body":[{"message_type":81,"server_get_encounters":{"number":10,"context":1,"user_field_filter":{"projection":[210,370,200,230,490,540,530,560,291,732,890,930,662,570,380,493,1140,1150,1160,1161],"request_albums":[{"album_type":7},{"album_type":12,"external_provider":12,"count":8}],"game_mode":0,"request_music_services":{"top_artists_limit":8,"supported_services":[29],"preview_image_size":{"width":120,"height":120}}},"last_person_id":"zAgEACTUwMzg3MDA1MgggvshqAAAAACCELS1y6UaxAV-EHI082uxFnmXeko2NwOYrNCWljo_iCQ"}}],"message_id":23,"message_type":81,"version":1,"is_background":false}
+        """
+        ping_back = "31bc026378e43d9573cfd24338161c8f"
+
+        url = "SERVER_GET_ENCOUNTERS"
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 81,
+                    "server_get_encounters": {
+                        "number": 10,
+                        "context": 1,
+                        "user_field_filter": {
+                            "projection": [
+                                210,
+                                370,
+                                200,
+                                230,
+                                490,
+                                540,
+                                530,
+                                560,
+                                291,
+                                732,
+                                890,
+                                930,
+                                662,
+                                570,
+                                380,
+                                493,
+                                1140,
+                                1150,
+                                1160,
+                                1161,
+                            ],
+                            "request_albums": [
+                                {"album_type": 7},
+                                {
+                                    "album_type": 12,
+                                    "external_provider": 12,
+                                    "count": 8,
+                                },
+                            ],
+                            "game_mode": 0,
+                            "request_music_services": {
+                                "top_artists_limit": 8,
+                                "supported_services": [29],
+                                "preview_image_size": {"width": 120, "height": 120},
+                            },
+                        },
+                    },
+                },
+            ],
+            "message_id": 7,
+            "message_type": 81,
+            "version": 1,
+            "is_background": False,
+        }
+
+        res = self.__request("POST", url, data, ping_back)
+
+        data = []
+
+        for result in res["body"][0]["client_encounters"]["results"]:
+            user = {
+                "id": result["user"]["user_id"],
+                "name": result["user"]["name"],
+                "age": result["user"]["age"],
+                "gender": result["user"]["gender"],
+            }
+
+            for field in result["user"]["profile_fields"]:
+                if field["id"] == "location":
+                    user["city"] = field["display_value"]
+                if field["id"] == "aboutme_text":
+                    user["bio"] = field["display_value"]
+
+            data.append(user)
+
+        return data
+
+    def get_matches(self):
+
+        ping_back = "d211c8f15ee93247b0341ac8651be3c6"
+
+        url = "SERVER_GET_USER_LIST"
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 245,
+                    "server_get_user_list": {
+                        "user_field_filter": {
+                            "projection": [
+                                200,
+                                210,
+                                340,
+                                230,
+                                640,
+                                580,
+                                300,
+                                860,
+                                280,
+                                590,
+                                591,
+                                250,
+                                700,
+                                762,
+                                592,
+                                880,
+                                582,
+                                930,
+                                585,
+                                583,
+                                305,
+                                330,
+                                763,
+                                1423,
+                                584,
+                                1262,
+                                911,
+                                912,
+                            ]
+                        },
+                        "preferred_count": 30,
+                        "folder_id": 0,
+                    },
+                }
+            ],
+            "message_id": 5,
+            "message_type": 245,
+            "version": 1,
+            "is_background": False,
+        }
+
+        res = self.__request("POST", url, data, ping_back=ping_back)
+
+        users = res["body"][0]["client_user_list"]["section"][1]["users"]
+
+        results = []
+
+        for user in users:
+            person = {
+                "id": user["user_id"],
+                "name": user["name"],
+                "birth_date": self.get_birthday(user["age"]),
+            }
+
+            results.append(person)
+
+        return results
+
+    def get_birthday(self, age: int):
+        """
+        Get the birthday in format Y-m-d from age.
+        Ex: 39 -> 1983-01-01
+        Ex: 18 -> 2004-01-01
+        """
+        today = datetime.datetime.today()
+        return today.replace(year=today.year - age).strftime("%Y-%m-%d")
+
+
+
+    def get_chat_message(self, chat_instance_id):
+        url = "SERVER_OPEN_CHAT"
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 102,
+                    "server_open_chat": {
+                        "user_field_filter": {
+                            "projection": [
+                                200,
+                                210,
+                                340,
+                                230,
+                                640,
+                                580,
+                                300,
+                                860,
+                                280,
+                                590,
+                                591,
+                                250,
+                                700,
+                                762,
+                                592,
+                                880,
+                                582,
+                                930,
+                                585,
+                                583,
+                                305,
+                                330,
+                                763,
+                                1423,
+                                584,
+                                1262,
+                                911,
+                                912,
+                            ],
+                            "request_albums": [
+                                {
+                                    "count": 10,
+                                    "offset": 1,
+                                    "album_type": 2,
+                                    "photo_request": {
+                                        "return_preview_url": True,
+                                        "return_large_url": True,
+                                    },
+                                }
+                            ],
+                        },
+                        "chat_instance_id": chat_instance_id,
+                        "message_count": 50,
+                    },
+                }
+            ],
+            "message_id": 6,
+            "message_type": 102,
+            "version": 1,
+            "is_background": False,
+        }
+
+        self.__request("POST", url, data)
+
+    def __request(self, method, url, data, ping_back=None):
+        """
+        NOTE: ping back must be set
+        """
+        data = json.dumps(data, separators=(",", ":"))
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
+            "Content-Type": "application/json",
+            "X-Pingback": ping_back,
+            "x-use-session-cookie": "1",
+            "Cookie": self.cookie,
+        }
+
+        url = "https://am1.bumble.com/mwebapi.phtml?" + url
+
+        response = requests.request(
+            method, url, headers=headers, data=data
+        )
+        results = response.json()
+
+        if results["message_type"] in (1, 124):
+            raise Exception(results)
+
+        return results
