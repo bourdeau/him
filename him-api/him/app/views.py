@@ -14,8 +14,6 @@ from him.app.bot import TinderBot
 @api_view(["GET"])
 def bot_like_profiles(request):
     if config["env"]["like"]:
-        rand_like = randint(0, 1)
-        if rand_like == 1:
             bot = TinderBot()
             bot.like_profiles()
 
@@ -33,8 +31,6 @@ def bot_send_first_messages(request):
 @api_view(["GET"])
 def bot_chat_with_matches(request):
     if config["env"]["chat"]:
-        rand_chat = randint(0, 10)
-        if rand_chat > 6:
             bot = TinderBot()
             bot.chat_with_matches()
 

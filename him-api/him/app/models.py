@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
 from him.settings import config
+import datetime
+import pytz
 
 
 class Person(models.Model):
@@ -29,6 +31,12 @@ class Person(models.Model):
         """
         Check if a person is likable
         """
+        young = datetime.datetime(2000, 1, 1, 8, 15, 12, 0, pytz.UTC)
+
+        if self.birth_date > young:
+            self.liked = True
+            return True
+        
         if self.distance_mi <= config["like"]["radius"]:
             self.liked = True
             return True

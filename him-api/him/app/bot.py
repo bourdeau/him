@@ -30,7 +30,7 @@ class TinderBot(Base):
                 return
 
             for person_data in persons_data:
-                self.sleep_long()
+                # self.sleep_long()
                 person = person_data.save()
                 likable = person.likable()
                 if likable:

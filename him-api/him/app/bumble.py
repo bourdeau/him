@@ -1,190 +1,11 @@
-from __future__ import annotations
 import hashlib
-
 import requests
-from him.app.serializers import (
-    MatchAPISerializer,
-    PersonAPISerializer,
-    MessageAPISerializer,
-)
-
 import json
 import datetime
 
-from typing import Generator
-from him.settings import config
-
-
-class TinderAPIClient:
-    """
-    Tinder API Client.
-    """
-
-    def __init__(self, token) -> None:
-        self.token = token
-
-    def like(self, user_id: str) -> None:
-        """
-        Like a user.
-        """
-        self.__request("POST", f"/like/{user_id}")
-
-    def dislike(self, user_id: str) -> None:
-        """
-        Dislike a user.
-        """
-        self.__request("POST", f"/pass/{user_id}")
-
-    def get_likables(self) -> Generator:
-        """
-        Get a list of users that you can like.
-        """
-        res = self.__request("GET", "/recs/core")
-
-        if not res or not "results" in res:
-            return
-
-        for result in res["results"]:
-            serializer = PersonAPISerializer(data=result)
-            serializer.is_valid(raise_exception=True)
-
-            yield serializer
-
-    def get_new_matches(self) -> Generator:
-        """
-        Get a list of new matches (i.e. 0 messages)
-        """
-        matches = self.__process_matches(message=0)
-
-        for match in matches:
-            yield match["id"], match["person"]["_id"], match["person"]["name"]
-
-    def get_matches(self) -> Generator:
-        """
-        Get a list of matches (i.e. 1 messages).
-        """
-        matches = self.__process_matches(message=1)
-
-        for match in matches:
-            serializer = MatchAPISerializer(data=match)
-            serializer.is_valid(raise_exception=True)
-
-            yield serializer
-
-    def __process_matches(self, message: int) -> list:
-        """
-        Process matches.
-        """
-        params = {
-            "count": 60,
-            "message": message,
-            "is_tinder_u": False,
-        }
-
-        matches = []
-        next_page_token = None
-
-        while True:
-            if next_page_token:
-                params["page_token"] = next_page_token
-
-            res = self.__request("GET", "/v2/matches", params=params)
-            next_page_token = res["data"].get("next_page_token")
-
-            if not res:
-                break
-
-            matches = matches + res["data"]["matches"]
-
-            if not next_page_token:
-                break
-
-        return matches
-
-    def get_messages(self, match_id: str) -> list:
-        """
-        Get messages from a match.
-        """
-        parmas = {
-            "count": 100,
-        }
-
-        url = f"/v2/matches/{match_id}/messages"
-
-        res = self.__request("GET", url=url, params=parmas)
-
-        messages = res["data"]["messages"]
-        messages.reverse()
-
-        results = []
-
-        for result in messages:
-            result["sent_from"] = result["from"]
-            result["sent_to"] = result["to"]
-            del result["from"]
-            del result["to"]
-
-            serializer = MessageAPISerializer(data=result)
-            serializer.is_valid(raise_exception=True)
-
-            results.append(serializer)
-
-        return results
-
-    def send_message(self, match_id: str, other_id: str, message: str) -> None:
-        """
-        Send a message to a match
-        """
-        url = f"/user/matches/{match_id}"
-
-        params = {
-            "locale": "fr",
-        }
-        data = {
-            "userId": config["your_profile"]["id"],
-            "otherId": other_id,
-            "matchId": match_id,
-            "message": message,
-        }
-
-        self.__request("POST", url=url, params=params, data=data)
-
-    def get_profile(self, profile_id: str) -> dict:
-        res = self.__request("GET", f"/user/{profile_id}")
-
-        if not res:
-            return
-
-        serializer = PersonAPISerializer(data=res["results"])
-        serializer.is_valid(raise_exception=True)
-
-        return serializer
-
-    def __request(self, method, url, headers=None, params=None, data=None):
-        """
-        Make a request to the Tinder API
-        """
-        headers = {
-            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
-            "X-Auth-Token": self.token
-        }
-
-        url = "https://api.gotinder.com" + url
-
-        if method == "GET":
-            r = requests.get(url, headers=headers, params=params)
-        elif method == "POST":
-            r = requests.post(url, headers=headers, params=params, data=data)
-
-        r.raise_for_status()
-
-        if r.status_code == 204:
-            return None
-
-        return r.json()
-
-
-
+"""
+TODO: In progress...
+"""
 class BumbleAPIClient:
     def __init__(self, cookie):
         self.cookie = cookie
@@ -195,9 +16,6 @@ class BumbleAPIClient:
         """
         Like a profile.
         """
-
-        ping_back = "5c67acc00d1f1f8a157bb855bce1c1db"
-
         url = "SERVER_ENCOUNTERS_VOTE"
 
         data = {
@@ -213,23 +31,17 @@ class BumbleAPIClient:
                     },
                 }
             ],
-            "message_id": 1,
             "message_type": 80,
             "version": 1,
-            "is_background": False,
         }
 
-        res = self.__request("POST", url, data, ping_back=ping_back)
-
-        print(res)
+        return self.__request("POST", url, data)
 
     def dislike(self, user_id):
         """
         Dislike a profile.
         message_id += 2
         """
-        message_id = 19
-
         url = "SERVER_ENCOUNTERS_VOTE"
 
         data = {
@@ -245,32 +57,24 @@ class BumbleAPIClient:
                     },
                 }
             ],
-            "message_id": 26,
             "message_type": 80,
             "version": 1,
-            "is_background": False,
         }
 
         self.__request("POST", url, data)
 
     def get_encounters(self):
         """
-        Pagination is with last person_id:
-
-            {"$gpb":"badoo.bma.BadooMessage","body":[{"message_type":81,"server_get_encounters":{"number":10,"context":1,"user_field_filter":{"projection":[210,370,200,230,490,540,530,560,291,732,890,930,662,570,380,493,1140,1150,1160,1161],"request_albums":[{"album_type":7},{"album_type":12,"external_provider":12,"count":8}],"game_mode":0,"request_music_services":{"top_artists_limit":8,"supported_services":[29],"preview_image_size":{"width":120,"height":120}}},"last_person_id":"zAgEACTUwMzg3MDA1MgggvshqAAAAACCELS1y6UaxAV-EHI082uxFnmXeko2NwOYrNCWljo_iCQ"}}],"message_id":23,"message_type":81,"version":1,"is_background":false}
+        Get Encounters.
         """
-        ping_back = "31bc026378e43d9573cfd24338161c8f"
-
         url = "SERVER_GET_ENCOUNTERS"
 
         data = {
             "$gpb": "badoo.bma.BadooMessage",
             "body": [
                 {
-                    "message_type": 81,
                     "server_get_encounters": {
-                        "number": 10,
-                        "context": 1,
+                        "number": 20,
                         "user_field_filter": {
                             "projection": [
                                 210,
@@ -294,31 +98,15 @@ class BumbleAPIClient:
                                 1160,
                                 1161,
                             ],
-                            "request_albums": [
-                                {"album_type": 7},
-                                {
-                                    "album_type": 12,
-                                    "external_provider": 12,
-                                    "count": 8,
-                                },
-                            ],
-                            "game_mode": 0,
-                            "request_music_services": {
-                                "top_artists_limit": 8,
-                                "supported_services": [29],
-                                "preview_image_size": {"width": 120, "height": 120},
-                            },
                         },
                     },
                 },
             ],
-            "message_id": 7,
             "message_type": 81,
-            "version": 1,
-            "is_background": False,
+            "version": 1
         }
 
-        res = self.__request("POST", url, data, ping_back)
+        res = self.__request("POST", url, data)
 
         data = []
 
@@ -341,9 +129,6 @@ class BumbleAPIClient:
         return data
 
     def get_matches(self):
-
-        ping_back = "d211c8f15ee93247b0341ac8651be3c6"
-
         url = "SERVER_GET_USER_LIST"
 
         data = {
@@ -395,7 +180,7 @@ class BumbleAPIClient:
             "is_background": False,
         }
 
-        res = self.__request("POST", url, data, ping_back=ping_back)
+        res = self.__request("POST", url, data)
 
         users = res["body"][0]["client_user_list"]["section"][1]["users"]
 
@@ -405,25 +190,25 @@ class BumbleAPIClient:
             person = {
                 "id": user["user_id"],
                 "name": user["name"],
-                "birth_date": self.get_birthday(user["age"]),
+                "birth_date": self.__get_birthday(user["age"]),
+                "is_locked": user["is_locked"]
             }
 
             results.append(person)
 
         return results
 
-    def get_birthday(self, age: int):
+    def __get_birthday(self, age: int):
         """
         Get the birthday in format Y-m-d from age.
         Ex: 39 -> 1983-01-01
         Ex: 18 -> 2004-01-01
         """
         today = datetime.datetime.today()
+
         return today.replace(year=today.year - age).strftime("%Y-%m-%d")
 
-
-
-    def get_chat_message(self, chat_instance_id):
+    def get_chat_message(self, user_id):
         url = "SERVER_OPEN_CHAT"
 
         data = {
@@ -475,7 +260,7 @@ class BumbleAPIClient:
                                 }
                             ],
                         },
-                        "chat_instance_id": chat_instance_id,
+                        "chat_instance_id": user_id,
                         "message_count": 50,
                     },
                 }
@@ -486,8 +271,54 @@ class BumbleAPIClient:
             "is_background": False,
         }
 
-        self.__request("POST", url, data)
+        res =  self.__request("POST", url, data)
 
+        messages = res["body"][0]["client_open_chat"]["chat_messages"]
+
+        results = []
+
+        for message in messages:
+            chat = {
+                "from_person_id": message["from_person_id"],
+                "to_person_id": message["to_person_id"],
+                "mssg": message["mssg"],
+                "date_created": message["date_created"]
+
+            }
+
+            results.append(chat)
+
+        return results
+
+    def send_message(self, user_id, message):
+        url = "SERVER_SEND_CHAT_MESSAGE"
+
+        uuid = int(datetime.datetime.now().timestamp()*1000)
+
+        data = {
+            "$gpb": "badoo.bma.BadooMessage",
+            "body": [
+                {
+                    "message_type": 104,
+                    "chat_message": {
+                        "mssg": message,
+                        "message_type": 1,
+                        "uid": uuid,
+                        "from_person_id": "zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH",
+                        "to_person_id": user_id,
+                        "read": False,
+                    },
+                }
+            ],
+            "message_id": 24,
+            "message_type": 104,
+            "version": 1,
+            "is_background": False,
+        }
+
+        res = self.__request("POST", url, data)
+
+        return res
 
     def __generate__x_pingback(self, body_json):
         str2hash = body_json + self.salt
@@ -497,9 +328,6 @@ class BumbleAPIClient:
 
 
     def __request(self, method, url, data):
-        """
-        NOTE: ping back must be set
-        """
         data = json.dumps(data, separators=(",", ":"))
 
         headers = {
@@ -521,3 +349,27 @@ class BumbleAPIClient:
             raise Exception(results)
 
         return results
+
+
+if __name__ == "__main__":
+    cookie = 'session_cookie_name=session; device_id=0fcee216-e216-16aa-fzzf3-f34669b45a3a; buzz_lang_code=en-us; first_web_visit_id=11980bdd3f38924887b16c349904b0f43f456443; last_referred_web_visit_id=042bfe004866ff6f28d84e52838731fc03a06be2; dnsDisplayed=undefined; ccpaApplies=false; signedLspa=undefined; ccpaUUID=52c88717-3061-450d-8d19-5b2fab45fdac; consentUUID=360556ad-318f-4265-96b2-1544e4a3f6b4_14; aid=1791540768; cpc=%7B%22c%22%3A0%2C%22e%22%3A1673018036522%2C%22u%22%3A%22zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH%22%7D; _sp_su=false; HDR-X-User-id=zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH; cookie_banner_closed=true; session=s4:221:Z2sXI7pErCz4hrqhosEABll8POlllN253UzPMoPy'
+    client = BumbleAPIClient(cookie=cookie)
+
+    persons = client.get_encounters()
+
+    for person in persons:
+        client.like(person["id"])
+
+    # matches = client.get_matches()
+
+    # for match in matches:
+
+    #     if not match["is_locked"]:
+    #         messages = client.get_chat_message(match["id"])
+    #         print(messages)
+
+
+    # message = "Mais j'imagine que tu as du trouver une relation sérieuse depuis le temps"
+    # res = client.send_message("zAhMACTYzMDMzODgzNgggvshqAAAAACB0pVc3NA1ylJgJZY-JJ7F_ieMA9VQqFwgFeVNFxizCJA", message)
+
+    # print(res)
