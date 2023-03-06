@@ -1,4 +1,4 @@
-# Him 🍆🍑💦
+# Him ❤️
 
 Tinder is not fair game when you are a man. Even if you spend a lot of money in Boosts, you won't get 50+ matches per day like women do.
 
