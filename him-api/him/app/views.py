@@ -3,8 +3,6 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view
-from him.settings import config
-from random import randint
 
 from him.app.serializers import PersonSerializer, MessageTemplateSerializer
 from him.app.models import Person, MessageTemplate

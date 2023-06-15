@@ -6,11 +6,12 @@ import datetime
 """
 TODO: In progress...
 """
+
+
 class BumbleAPIClient:
     def __init__(self, cookie):
         self.cookie = cookie
         self.salt = "whitetelevisionbulbelectionroofhorseflying"
-
 
     def like(self, user_id):
         """
@@ -103,7 +104,7 @@ class BumbleAPIClient:
                 },
             ],
             "message_type": 81,
-            "version": 1
+            "version": 1,
         }
 
         res = self.__request("POST", url, data)
@@ -191,7 +192,7 @@ class BumbleAPIClient:
                 "id": user["user_id"],
                 "name": user["name"],
                 "birth_date": self.__get_birthday(user["age"]),
-                "is_locked": user["is_locked"]
+                "is_locked": user["is_locked"],
             }
 
             results.append(person)
@@ -271,7 +272,7 @@ class BumbleAPIClient:
             "is_background": False,
         }
 
-        res =  self.__request("POST", url, data)
+        res = self.__request("POST", url, data)
 
         messages = res["body"][0]["client_open_chat"]["chat_messages"]
 
@@ -282,8 +283,7 @@ class BumbleAPIClient:
                 "from_person_id": message["from_person_id"],
                 "to_person_id": message["to_person_id"],
                 "mssg": message["mssg"],
-                "date_created": message["date_created"]
-
+                "date_created": message["date_created"],
             }
 
             results.append(chat)
@@ -293,7 +293,7 @@ class BumbleAPIClient:
     def send_message(self, user_id, message):
         url = "SERVER_SEND_CHAT_MESSAGE"
 
-        uuid = int(datetime.datetime.now().timestamp()*1000)
+        uuid = int(datetime.datetime.now().timestamp() * 1000)
 
         data = {
             "$gpb": "badoo.bma.BadooMessage",
@@ -323,9 +323,8 @@ class BumbleAPIClient:
     def __generate__x_pingback(self, body_json):
         str2hash = body_json + self.salt
         result = hashlib.md5(str2hash.encode())
-        
-        return result.hexdigest()
 
+        return result.hexdigest()
 
     def __request(self, method, url, data):
         data = json.dumps(data, separators=(",", ":"))
@@ -340,9 +339,7 @@ class BumbleAPIClient:
 
         url = "https://am1.bumble.com/mwebapi.phtml?" + url
 
-        response = requests.request(
-            method, url, headers=headers, data=data
-        )
+        response = requests.request(method, url, headers=headers, data=data)
         results = response.json()
 
         if results["message_type"] in (1, 124):
@@ -352,7 +349,7 @@ class BumbleAPIClient:
 
 
 if __name__ == "__main__":
-    cookie = 'session_cookie_name=session; device_id=0fcee216-e216-16aa-fzzf3-f34669b45a3a; buzz_lang_code=en-us; first_web_visit_id=11980bdd3f38924887b16c349904b0f43f456443; last_referred_web_visit_id=042bfe004866ff6f28d84e52838731fc03a06be2; dnsDisplayed=undefined; ccpaApplies=false; signedLspa=undefined; ccpaUUID=52c88717-3061-450d-8d19-5b2fab45fdac; consentUUID=360556ad-318f-4265-96b2-1544e4a3f6b4_14; aid=1791540768; cpc=%7B%22c%22%3A0%2C%22e%22%3A1673018036522%2C%22u%22%3A%22zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH%22%7D; _sp_su=false; HDR-X-User-id=zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH; cookie_banner_closed=true; session=s4:221:Z2sXI7pErCz4hrqhosEABll8POlllN253UzPMoPy'
+    cookie = "session_cookie_name=session; device_id=0fcee216-e216-16aa-fzzf3-f34669b45a3a; buzz_lang_code=en-us; first_web_visit_id=11980bdd3f38924887b16c349904b0f43f456443; last_referred_web_visit_id=042bfe004866ff6f28d84e52838731fc03a06be2; dnsDisplayed=undefined; ccpaApplies=false; signedLspa=undefined; ccpaUUID=52c88717-3061-450d-8d19-5b2fab45fdac; consentUUID=360556ad-318f-4265-96b2-1544e4a3f6b4_14; aid=1791540768; cpc=%7B%22c%22%3A0%2C%22e%22%3A1673018036522%2C%22u%22%3A%22zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH%22%7D; _sp_su=false; HDR-X-User-id=zAhMACjE3OTE1NDA3NjgAINxseyIKUZ8pwOoADSILJq9nGzFVPLRHCwoxvX0LzSSH; cookie_banner_closed=true; session=s4:221:Z2sXI7pErCz4hrqhosEABll8POlllN253UzPMoPy"
     client = BumbleAPIClient(cookie=cookie)
 
     persons = client.get_encounters()
@@ -367,7 +364,6 @@ if __name__ == "__main__":
     #     if not match["is_locked"]:
     #         messages = client.get_chat_message(match["id"])
     #         print(messages)
-
 
     # message = "Mais j'imagine que tu as du trouver une relation sérieuse depuis le temps"
     # res = client.send_message("zAhMACTYzMDMzODgzNgggvshqAAAAACB0pVc3NA1ylJgJZY-JJ7F_ieMA9VQqFwgFeVNFxizCJA", message)

@@ -166,7 +166,7 @@ class TinderAPIClient:
         """
         headers = {
             "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:107.0) Gecko/20100101 Firefox/107.0",
-            "X-Auth-Token": self.token
+            "X-Auth-Token": self.token,
         }
 
         url = "https://api.gotinder.com" + url
@@ -184,12 +184,10 @@ class TinderAPIClient:
         return r.json()
 
 
-
 class BumbleAPIClient:
     def __init__(self, cookie):
         self.cookie = cookie
         self.salt = "whitetelevisionbulbelectionroofhorseflying"
-
 
     def like(self, user_id):
         """
@@ -421,8 +419,6 @@ class BumbleAPIClient:
         today = datetime.datetime.today()
         return today.replace(year=today.year - age).strftime("%Y-%m-%d")
 
-
-
     def get_chat_message(self, chat_instance_id):
         url = "SERVER_OPEN_CHAT"
 
@@ -488,13 +484,11 @@ class BumbleAPIClient:
 
         self.__request("POST", url, data)
 
-
     def __generate__x_pingback(self, body_json):
         str2hash = body_json + self.salt
         result = hashlib.md5(str2hash.encode())
-        
-        return result.hexdigest()
 
+        return result.hexdigest()
 
     def __request(self, method, url, data):
         """
@@ -512,9 +506,7 @@ class BumbleAPIClient:
 
         url = "https://am1.bumble.com/mwebapi.phtml?" + url
 
-        response = requests.request(
-            method, url, headers=headers, data=data
-        )
+        response = requests.request(method, url, headers=headers, data=data)
         results = response.json()
 
         if results["message_type"] in (1, 124):

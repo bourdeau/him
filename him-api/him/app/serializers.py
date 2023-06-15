@@ -4,7 +4,6 @@ from him.settings import config
 import re
 
 
-
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photo
@@ -98,6 +97,7 @@ class MatchAPISerializer(serializers.Serializer):
     """
     MatchAPISerializer.
     """
+
     id = serializers.CharField()
     closed = serializers.BooleanField()
     common_like_count = serializers.IntegerField()
@@ -122,7 +122,6 @@ class MatchAPISerializer(serializers.Serializer):
     subscription_tier = serializers.CharField(required=False)
     is_archived = serializers.BooleanField()
 
-
     def create(self, validated_data):
 
         person_2 = validated_data.pop("person")
@@ -132,7 +131,6 @@ class MatchAPISerializer(serializers.Serializer):
             person_2 = Person.objects.get(pk=person_2["id"])
         except Person.DoesNotExist:
             person_2 = Person(**person_2)
-        
 
         person_2.match = True
         person_2.save()
@@ -142,7 +140,6 @@ class MatchAPISerializer(serializers.Serializer):
         except Person.DoesNotExist:
             person_1 = Person(id=config["your_profile"]["id"], gender=1, name="Pierre")
             person_1.save()
-    
 
         validated_data["person_1"] = person_1
         validated_data["person_2"] = person_2
@@ -173,7 +170,6 @@ class MessageAPISerializer(serializers.Serializer):
         sent_from = Person.objects.get(pk=validated_data["sent_from"])
         sent_to = Person.objects.get(pk=validated_data["sent_to"])
 
-
         if sent_from.id != config["your_profile"]["id"]:
             sent_from.match = True
             sent_from.save()
@@ -197,13 +193,13 @@ class MessageAPISerializer(serializers.Serializer):
 
         return message
 
-
     def find_phone_number(self, text: str):
         """
         Find a French phone number in a string.
         """
         phone = re.search(
-            r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}", text
+            r"(\+33|0)[\s]?[6|7][\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}[\s]?[0-9]{2}",
+            text,
         )
 
         if phone:
