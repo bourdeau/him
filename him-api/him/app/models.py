@@ -36,7 +36,7 @@ class Person(models.Model):
         if self.birth_date > young:
             self.liked = True
             return True
-        
+
         if self.distance_mi <= config["like"]["radius"]:
             self.liked = True
             return True
@@ -44,6 +44,7 @@ class Person(models.Model):
         self.liked = False
 
         return False
+
 
 class Match(models.Model):
     """
@@ -78,8 +79,12 @@ class Match(models.Model):
     """
 
     id = models.TextField(primary_key=True)
-    person_1 = models.ForeignKey(Person, related_name="person_1", on_delete=models.CASCADE)
-    person_2 = models.ForeignKey(Person, related_name="person_2", on_delete=models.CASCADE)
+    person_1 = models.ForeignKey(
+        Person, related_name="person_1", on_delete=models.CASCADE
+    )
+    person_2 = models.ForeignKey(
+        Person, related_name="person_2", on_delete=models.CASCADE
+    )
     closed = models.BooleanField(null=False, default=False)
     common_like_count = models.IntegerField(null=False, default=0)
     created_date = models.DateTimeField(null=True)
@@ -133,7 +138,9 @@ class Message(models.Model):
     """
 
     id = models.TextField(primary_key=True)
-    match = models.ForeignKey(Match, default=None, related_name="match", on_delete=models.CASCADE)
+    match = models.ForeignKey(
+        Match, default=None, related_name="match", on_delete=models.CASCADE
+    )
     sent_from = models.ForeignKey(
         Person, default=None, related_name="sent_from", on_delete=models.CASCADE
     )
@@ -165,5 +172,3 @@ class MessageTemplate(models.Model):
     class Meta:
         db_table = "message_template"
         ordering = ["created_at"]
-
-

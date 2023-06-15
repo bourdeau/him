@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0011_match_message_match'),
+        ("app", "0011_match_message_match"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='match',
-            name='subscription_tier',
-            field=models.TextField(default='platinum', null=True),
+            model_name="match",
+            name="subscription_tier",
+            field=models.TextField(default="platinum", null=True),
         ),
     ]

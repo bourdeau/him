@@ -2,7 +2,6 @@ from rest_framework.views import exception_handler
 import logging
 import time
 from random import randint
-import re
 
 logger = logging.getLogger(__name__)
 

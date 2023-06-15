@@ -11,7 +11,6 @@ RUN set -eux; \
     ; \
     rm -rf /var/lib/apt/lists/*
 
-
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 

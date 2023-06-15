@@ -1,10 +1,8 @@
 from random import randint
-from him.settings import config
 from django.db.models import Q
 from him.app.helpers import Base
 from him.app.message import MessageTemplate
 from him.app.models import Person, Message
-from him.app.serializers import MatchAPISerializer
 from him.app.chat import Chat
 
 
@@ -79,7 +77,7 @@ class TinderBot(Base):
         for match in matches:
             match.save()
             match_data = match.validated_data
-            
+
             self.__save_message_to_db(match_data["id"])
             self.__chat_with_a_match(match_data)
 

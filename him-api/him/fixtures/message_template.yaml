@@ -1,0 +1,125 @@
+- model: app.messagetemplate
+  pk: f6eb05ca-ff77-40b3-813d-0b706d19f75a
+  fields:
+    message: "Hello :)"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: a586c31c-3e65-4568-809a-17fe534ea5a0
+  fields:
+    message: "Salut $name :)"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: f13a1370-8252-4d6e-9ab1-1ba827eaddf8
+  fields:
+    message: "Salut $name, tu fais quoi ce soir ?"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: d6790b56-f4ae-40af-9d5f-7191d3b9fdaf
+  fields:
+    message: "Bonjour $name, dis moi t'as un truc de prévu ce soir ?"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: f6b8adbb-0d22-4c63-87a6-81d2b12f99b7
+  fields:
+    message: "Coucou $name ! Très bons goûts musicaux ! Alors tu as trouvé l'amour dans la jungle de Tinder ?"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: 06e594b6-fc5e-419f-af8a-90c380f83da0
+  fields:
+    message: "Y a certains profils dont le match provoque une petite décharge"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: ea04e92d-9dd2-49f5-b4da-95eada49a7d6
+  fields:
+    message: "J'aime beaucoup tes goûts musicaux"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: 218442f2-33b4-446b-a334-51a741923199
+  fields:
+    message: "😘"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: 19c10dae-269c-4621-a4eb-ae0ae917ecd8
+  fields:
+    message: "😍"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: 31badeb1-2291-41e1-8acf-dee3b35ca2fd
+  fields:
+    message: "Salut $name !\nDis moi, est-ce que par le plus grand des hasards tu aurais envie d'aller boire une bière ce soir ? Je sais c'est un peu à la dernière minute..."
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: e341d8bb-0b45-4686-aade-a060da1694ff
+  fields:
+    message: "T'es mignonne mais un peu loin pour moi 😘"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: 3cd981f5-6ddd-411a-8931-af10450c0939
+  fields:
+    message: "Salut $name ! Toi qui es spontanée, ça te dit d'aller boire un verre ce soir ? :)"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+  
+- model: app.messagetemplate
+  pk: c65205e8-84de-4932-b19d-152df9e89805
+  fields:
+    message: "T'es vachement mignonne, mais aussi vachement loin ! Ça fait beaucoup de vaches en une seule phrase..."
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"
+
+- model: app.messagetemplate
+  pk: d80b2caa-1195-41e9-a364-a924c8a68b69
+  fields:
+    message: "Salut $name ! Ça fait trois fois que j'essaie de trouver l'inspiration sur tes photos, mais je me foire à chaque fois... donc je laisse tomber et je vais retrouver un pote pour boire un verre, ça au moins je sais faire ! \n P.S t'as l'air chouette !"
+    nb_sent: 0
+    nb_reply: 0
+    created_at: "2023-01-01T00:00:00Z"
+    updated_at: "2023-01-01T00:00:00Z"

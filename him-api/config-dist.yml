@@ -1,7 +1,3 @@
-env:
-  like: false
-  send_first_message: true
-  chat: false
 x_auth_token: 3a8293f2-cb6f-4f38-428e-a4a87d52decc
 openai_secret: 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
 openai_engine: davinci:ft-personal:tinder-2022-11-27-13-10-13
@@ -14,37 +10,3 @@ like:
   radius: 2
 chat:
   context: $your_profile_bio\n\n$your_profile_name discute avec $her_name sur Tinder. Elle a donné les informations dans sa biographie :\n$her_bio\n\n{YOUR_NAME} aimerait bien rencontrer $her_name.\n
-  first_messages:
-  - Hello :)
-  - Salut $name :)
-  - Salut $name, tu fais quoi ce soir ?
-  - Bonjour $name, dis moi t'as un truc de prévu ce soir ?
-  - Coucou $name ! Très bons goûts musicaux ! Alors tu as trouvé l'amour dans la jungle de Tinder ?
-  - Y a certains profils dont le match provoque une petite décharge
-  - T’as jamais essayé l’aérobic après avoir bu des coups? En vrai c’est rigolo
-  - J'aime beaucoup tes goûts musicaux
-  - J'aime beaucoup ta bio
-  - 😘
-  - 😍
-  - Salut $name !\nDis moi, est-ce que par le plus grand des hasards tu aurais envie d'aller boire une bière ce soir ? Je sais c'est un peu à la dernière minute...
-  - T'es mignonne mais un peu loin pour moi 😘
-  - Salut $name ! Toi qui es spontanée, ça te dit d'aller boire un verre ce soir ? :)
-  - T'es vachement mignonne, mais aussi vachement loin ! Ça fait beaucoup de vaches en une seule phrase...
-  - Salut $name ! Ça fait trois fois que j'essaie de trouver l'inspiration sur tes photos, mais je me foire à chaque fois... donc je laisse tomber et je vais retrouver un pote pour boire un verre, ça au moins je sais faire ! \n P.S t'as l'air chouette !
-
-white_list:
-  - 
-    id: 56850001edd3410648063ee062d7d7a14e95f00100f1cc19
-    name: Lola
-  - 
-    id: 5453641e0ee24c4a2996eb5162d7d7a14e95f00100f1cc19
-    name: Alicia
-  - 
-    id: 6234ec3ca90a7e0100ebfc8a62d7d7a14e95f00100f1cc19
-    name: Laura
-  - 
-    id: 618adcb6e245d70100e9490362d7d7a14e95f00100f1cc19
-    name: Marine
-  -
-    id: 612674a4d9ec2e010076ad9c62d7d7a14e95f00100f1cc19
-    name: Miss Valentine
