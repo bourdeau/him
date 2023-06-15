@@ -13,9 +13,8 @@ from him.app.bot import TinderBot
 
 @api_view(["GET"])
 def bot_like_profiles(request):
-    if config["env"]["like"]:
-            bot = TinderBot()
-            bot.like_profiles()
+    bot = TinderBot()
+    bot.like_profiles()
 
     return Response({"message": "Liked profiles"}, status=status.HTTP_200_OK)
 
@@ -30,9 +29,8 @@ def bot_send_first_messages(request):
 
 @api_view(["GET"])
 def bot_chat_with_matches(request):
-    if config["env"]["chat"]:
-            bot = TinderBot()
-            bot.chat_with_matches()
+    bot = TinderBot()
+    bot.chat_with_matches()
 
     return Response({"message": "Chated with Matches"}, status=status.HTTP_200_OK)
 
